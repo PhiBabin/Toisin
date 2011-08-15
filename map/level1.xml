@@ -3,7 +3,7 @@
 	<metadata>
 		<info name="mappath" value="map/level1/levelDonjon.png" />
 		<info name="backpath" value="map/level1/levelDonjonb.png" />
-		<info name="tilepath" value="map/level1/tilesimage.png" />
+		<info name="tilepath" value="map/level1/tilesimage2.png" />
 		<info name="corrpath" value="map/level1/tile.png" />
 		<!--<info name="backbackpath" value="map/level1/shadow.png" x="0" y="100"/>-->
 	</metadata>

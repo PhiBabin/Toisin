@@ -16,13 +16,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.*/
 
 #include "Player.hpp"
-Player::Player(sf::Image &img, MapTile **map):
-ImgAnim::ImgAnim(img,3,4)
+Player::Player(MapTile **map):
+ImgAnim::ImgAnim(GameConfig::g_imgManag["player"].img,GameConfig::g_imgManag["player"].nbrCollum,GameConfig::g_imgManag["player"].nbrLine)
 ,m_hp(GameConfig::g_config["starthp"])
+,m_map(map)
 ,m_velx(0),m_vely(0),
 m_jumpLock(false),m_colBot(false),m_direction(false),m_lookUp(false),m_moving(false)
 {
-    setDelay(0.2);
+   pause();
 }
 
 sf::FloatRect Player::GetPlayerRect(){
@@ -32,7 +33,7 @@ sf::FloatRect Player::GetMovedPlayerRect(const float moveX,const float moveY){
   return sf::FloatRect(GetPosition().x+moveX,GetPosition().y+moveY,GameConfig::g_config["playercollwidth"],GameConfig::g_config["playercollheight"]);
 }
 sf::FloatRect Player::GetViewRect(){
-   return sf::FloatRect(GetPosition().x-GameConfig::g_config["screenwidth"]/8,GetPosition().y-GameConfig::g_config["screenheight"]/8,GetPosition().x+GameConfig::g_config["screenheight"]/8,GetPosition().y+GameConfig::g_config["screenheight"]/8);
+   return sf::FloatRect(GetPosition().x-GameConfig::g_config["screenwidth"]/4,GetPosition().y-GameConfig::g_config["screenheight"]/4,GameConfig::g_config["screenwidth"]/2,GameConfig::g_config["screenheight"]/2);
 }
 
 void Player::Gravity(sf::RenderWindow &app){
@@ -55,32 +56,18 @@ void Player::Turn(bool left, bool right){
     if(left&&!right){
         m_moving=true;
         m_direction=GAUCHE;
-        if(m_colBot){
-            setAnimRow(1);
-        }
-        else {
-            setAnimRow(3);
-        }
-        play();
         m_velx=-150;
     }
     else if(!left&&right){
         m_moving=true;
         m_direction=DROITE;
-        if(m_colBot)setAnimRow(0);
-        else setAnimRow(2);
-        play();
         m_velx=150;
     }
     else{
         m_moving=false;
-        if(m_colBot&& m_direction==GAUCHE)setAnimRow(1);
-        else if(m_colBot&& m_direction==DROITE)setAnimRow(0);
-        else if(animRow()<2) setAnimRow(animRow()+2);
-        else setAnimRow(animRow());
-        stop();
         m_velx*=0.8;
     }
+    FlipX(m_direction);
 }
  bool Player::CollisionGeneral(const sf::FloatRect playerRect,bool &kill){
     int maxHeight, minHeight, maxWidth, minWidth;
@@ -237,12 +224,11 @@ void Player::Shoot(){
             if(m_direction==DROITE)velx=250;
         }
 
-        m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["fire"].img,GameConfig::GameConfig::g_imgManag["fire"].nbrCollum,GameConfig::GameConfig::g_imgManag["fire"].nbrLine,10,true,this,velx,vely));
+        m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,true,this,velx,vely));
         m_listObject->back()->SetPosition(GetPosition());
         m_listObject->back()->setDelay(0.1);
-        if(!(m_lookUp==HAUT && m_moving==IMMOBILE))m_listObject->back()->FlipX(m_direction);
-        else m_listObject->back()->FlipX(false);
         m_listObject->back()->SetRotation(rotation);
+        m_listObject->back()->SetColor(sf::Color::Red);
         m_lastShot.Reset();
     }
 }

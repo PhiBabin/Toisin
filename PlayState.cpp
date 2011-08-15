@@ -25,7 +25,7 @@ PlayState::PlayState(GameEngine* theGameEngine): m_playerOne(0),m_map(0)
 ,m_gameEngine(theGameEngine){
 
 
-    m_playerOne= new Player(GameConfig::GameConfig::g_imgManag["mago"].img, &m_map);
+    m_playerOne= new Player(&m_map);
 
     m_map =new MapTile(&(*m_gameEngine).m_app,m_playerOne);
 
@@ -82,6 +82,9 @@ void PlayState::loop(){
 
  //! Déplacement du personnage 1
     movePlayer(*m_playerOne);
+
+ //! Déplacement de la caméra
+    m_gameEngine->m_app.SetView(sf::View(m_playerOne->GetViewRect()));
 
  //! Déplacement des objets
     moveObject();
@@ -179,12 +182,12 @@ void PlayState::moveObject(){
             sf::FloatRect Rect=m_mapEntity->at(i)->GetMovedRect(m_mapEntity->at(i)->GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f,m_mapEntity->at(i)->GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f);
             //! On vérifie si l'object touche le joueur si oui on supprimer l'objet et crée un animation d'un explosion
             if((m_playerOne->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_playerOne))){
-                //! On crée l'animation
-                m_mapEntity->push_back(new GameAnim(GameConfig::g_imgManag["explosion"].img,GameConfig::GameConfig::g_imgManag["explosion"].nbrCollum,GameConfig::GameConfig::g_imgManag["explosion"].nbrLine));
-                if(m_playerOne->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_playerOne))
-                m_mapEntity->back()->SetPosition(m_playerOne->GetPosition().x+rand() *-3.f /RAND_MAX + 3.f,m_playerOne->GetPosition().y+rand() *-5.f /RAND_MAX + 2.f);
-                m_mapEntity->back()->Move(0,5);
-                m_mapEntity->back()->setDelay(0.1);
+//                //! On crée l'animation
+//                m_mapEntity->push_back(new GameAnim(GameConfig::g_imgManag["explosion"].img,GameConfig::GameConfig::g_imgManag["explosion"].nbrCollum,GameConfig::GameConfig::g_imgManag["explosion"].nbrLine));
+//                if(m_playerOne->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_playerOne))
+//                m_mapEntity->back()->SetPosition(m_playerOne->GetPosition().x+rand() *-3.f /RAND_MAX + 3.f,m_playerOne->GetPosition().y+rand() *-5.f /RAND_MAX + 2.f);
+//                m_mapEntity->back()->Move(0,5);
+//                m_mapEntity->back()->setDelay(0.1);
                 //! On crée libère la mémoire de le l'instance de l'objet
                 delete m_mapEntity->at(i);
                 //! On supprime le pointeur du tableau dynamique
@@ -194,10 +197,10 @@ void PlayState::moveObject(){
                 //! On déplace l'objet
                 m_mapEntity->at(i)->Move(Rect.Left-m_mapEntity->at(i)->GetPosition().x,Rect.Top-m_mapEntity->at(i)->GetPosition().y);
             else {
-                //! On crée une explosion
-                m_mapEntity->push_back(new GameAnim(GameConfig::g_imgManag["explosion2"].img,GameConfig::GameConfig::g_imgManag["explosion2"].nbrCollum,GameConfig::GameConfig::g_imgManag["explosion2"].nbrLine));
-                m_mapEntity->back()->SetPosition(m_mapEntity->at(i)->GetPosition().x,m_mapEntity->at(i)->GetPosition().y);
-                m_mapEntity->back()->setDelay(0.1);
+//                //! On crée une explosion
+//                m_mapEntity->push_back(new GameAnim(GameConfig::g_imgManag["explosion2"].img,GameConfig::GameConfig::g_imgManag["explosion2"].nbrCollum,GameConfig::GameConfig::g_imgManag["explosion2"].nbrLine));
+//                m_mapEntity->back()->SetPosition(m_mapEntity->at(i)->GetPosition().x,m_mapEntity->at(i)->GetPosition().y);
+//                m_mapEntity->back()->setDelay(0.1);
                 delete m_mapEntity->at(i);
                 m_mapEntity->erase( m_mapEntity->begin() + i );
             }

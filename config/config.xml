@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <img>
 	<anim name="player" path="img/player.png" nbrCollums="4" nbrLines="1" />
+	<sprite name="bullet" path="img/bullet.png" nbrCollums="1" nbrLines="1" />
 </img>
 <sound>
 	<wav name="jump" path="sounds/jump.wav" />
@@ -8,12 +9,12 @@
 <config>
 	<option name="screenwidth" value="800" />
 	<option name="screenheight" value="600" />
-	<option name="tilewidth" value="16" />
-	<option name="tileheight" value="15" />
+	<option name="tilewidth" value="10" />
+	<option name="tileheight" value="10" />
 	<option name="tilesetwidth" value="10" />
 	<option name="tilesetheight" value="9" />
 	<option name="playercollwidth" value="5" />
-	<option name="playercollheight" value="9" />
+	<option name="playercollheight" value="10" />
 	<option name="gravity" value="350" />
 	<option name="jump" value="-300" />
 	<option name="starthp" value="100" />

@@ -21,7 +21,7 @@ class MapTile;
 class Player:public ImgAnim{
     public:
     //! Construteur
-        Player(sf::Image &img, MapTile **map);
+        Player(MapTile **map);
     //! Affiche
         void Drawing(sf::RenderWindow* app);
     //! Retourne le rectangle de Camera
