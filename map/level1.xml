@@ -7,6 +7,9 @@
 		<info name="corrpath" value="map/level1/tile.png" />
 		<!--<info name="backbackpath" value="map/level1/shadow.png" x="0" y="100"/>-->
 	</metadata>
+	<flag>
+		<position x="24" y="7" color="0"/>
+	</flag>
 	<items>
 		<position x1="24" y1="7"  x2="3" y2="27"  x3="45" y3="27"/>
 	</items>

@@ -47,33 +47,25 @@ void PlayState::loop(){
         Gestion des entrées claviers
     */
 
-//    //! Pauser le jeu
-//   if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Return))pause();
-//
-//    //! Control du joueur 1
-//    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::M))m_playerOne->Jump();
-//    m_playerOne->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
-//    m_playerOne->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
-//    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::N))m_playerOne->Shoot();
-//
-//
-//    //! Control du joueur 2
-//    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::G))m_playerTwo->Jump();
-//    m_playerTwo->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::W));
-//    m_playerTwo->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::A),sf::Keyboard::IsKeyPressed(sf::Keyboard::D));
-//    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::F))m_playerTwo->Shoot();
-
-    const sf::Input &Input =m_gameEngine->m_app.GetInput();
-
-    //! Pauser le jeu
-   if(Input.IsKeyDown(sf::Key::Return))pause();
 
     //! Control du joueur 1
-    if(Input.IsKeyDown(sf::Key::L))m_playerOne->Degat(-40);
-    if(Input.IsKeyDown(sf::Key::Numpad3))m_playerOne->Jump();
-    if(Input.IsKeyDown(sf::Key::Numpad2))m_playerOne->Shoot();
-    m_playerOne->TurnUp(Input.IsKeyDown(sf::Key::Up));
-    m_playerOne->Turn(Input.IsKeyDown(sf::Key::Left),Input.IsKeyDown(sf::Key::Right));
+    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::X))m_playerOne->Jump();
+    m_playerOne->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
+    m_playerOne->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Z))m_playerOne->Shoot();
+
+
+//    const sf::Input &Input =m_gameEngine->m_app.GetInput();
+//
+//    //! Pauser le jeu
+//   if(Input.IsKeyDown(sf::Key::Return))pause();
+//
+//    //! Control du joueur 1
+//    if(Input.IsKeyDown(sf::Key::L))m_playerOne->Degat(-40);
+//    if(Input.IsKeyDown(sf::Key::X))m_playerOne->Jump();
+//    if(Input.IsKeyDown(sf::Key::Z))m_playerOne->Shoot();
+//    m_playerOne->TurnUp(Input.IsKeyDown(sf::Key::Up));
+//    m_playerOne->Turn(Input.IsKeyDown(sf::Key::Left),Input.IsKeyDown(sf::Key::Right));
 
 
     /**
@@ -191,11 +183,11 @@ void PlayState::moveObject(){
                 //! On crée libère la mémoire de le l'instance de l'objet
                 delete m_mapEntity->at(i);
                 //! On supprime le pointeur du tableau dynamique
-                m_mapEntity->erase( m_mapEntity->begin() + i );
+                m_mapEntity->erase(m_mapEntity->begin()+i);
             }
             else if(!m_map->CollisionGeneral(Rect))
                 //! On déplace l'objet
-                m_mapEntity->at(i)->Move(Rect.Left-m_mapEntity->at(i)->GetPosition().x,Rect.Top-m_mapEntity->at(i)->GetPosition().y);
+                m_mapEntity->at(i)->Move(Rect.Left-m_mapEntity->at(i)->GetPosition().x, Rect.Top-m_mapEntity->at(i)->GetPosition().y);
             else {
 //                //! On crée une explosion
 //                m_mapEntity->push_back(new GameAnim(GameConfig::g_imgManag["explosion2"].img,GameConfig::GameConfig::g_imgManag["explosion2"].nbrCollum,GameConfig::GameConfig::g_imgManag["explosion2"].nbrLine));
@@ -203,6 +195,7 @@ void PlayState::moveObject(){
 //                m_mapEntity->back()->setDelay(0.1);
                 delete m_mapEntity->at(i);
                 m_mapEntity->erase( m_mapEntity->begin() + i );
+                i--;
             }
         }
         else{

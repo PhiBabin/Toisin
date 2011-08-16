@@ -33,7 +33,7 @@ sf::FloatRect Player::GetMovedPlayerRect(const float moveX,const float moveY){
   return sf::FloatRect(GetPosition().x+moveX,GetPosition().y+moveY,GameConfig::g_config["playercollwidth"],GameConfig::g_config["playercollheight"]);
 }
 sf::FloatRect Player::GetViewRect(){
-   return sf::FloatRect(GetPosition().x-GameConfig::g_config["screenwidth"]/4,GetPosition().y-GameConfig::g_config["screenheight"]/4,GameConfig::g_config["screenwidth"]/2,GameConfig::g_config["screenheight"]/2);
+   return sf::FloatRect(GetPosition().x-(int)GameConfig::g_config["screenwidth"]/8,GetPosition().y-(int)GameConfig::g_config["screenheight"]/8,(int)GameConfig::g_config["screenwidth"]/4,(int)GameConfig::g_config["screenheight"]/4);
 }
 
 void Player::Gravity(sf::RenderWindow &app){
@@ -44,7 +44,6 @@ void Player::Jump(){
         m_jumpLock=true;
         m_vely+=GameConfig::g_config["jump"];
         SetBottomCollision(false);
-        cout<<"jump"<<endl;
     }
 }
 void Player::TurnUp(bool up){
@@ -56,12 +55,12 @@ void Player::Turn(bool left, bool right){
     if(left&&!right){
         m_moving=true;
         m_direction=GAUCHE;
-        m_velx=-150;
+        m_velx=-100;
     }
     else if(!left&&right){
         m_moving=true;
         m_direction=DROITE;
-        m_velx=150;
+        m_velx=100;
     }
     else{
         m_moving=false;
@@ -203,31 +202,26 @@ void Player::UnlockJump(){
 void Player::Shoot(){
     if(m_lastShot.GetElapsedTime()/1000.f>0.4){
         float velx=0,vely=0;
-        int rotation=0;
         if(m_lookUp==HAUT ){
             if(m_moving==BOUGE){
-                rotation=-45;
                 vely=-162;
                 velx=162;
                 if(m_direction==GAUCHE){
-                    rotation=45;
                     velx=-162;
                 }
             }
             else{
-                rotation=-90;
-                vely=-250;
+                vely=-10;
             }
         }
         else{
-            velx=-250;
-            if(m_direction==DROITE)velx=250;
+            velx=-10;
+            if(m_direction==DROITE)velx=10;
         }
 
         m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,true,this,velx,vely));
         m_listObject->back()->SetPosition(GetPosition());
         m_listObject->back()->setDelay(0.1);
-        m_listObject->back()->SetRotation(rotation);
         m_listObject->back()->SetColor(sf::Color::Red);
         m_lastShot.Reset();
     }

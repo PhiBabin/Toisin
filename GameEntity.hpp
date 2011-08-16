@@ -20,7 +20,7 @@ class Player;
 
 class GameEntity:public ImgAnim{
     public:
-        GameEntity(sf::Image &img,int nbrFrame,int nbrLigne,float height, float width,float offsetColX,float offsetColY,bool col);
+        GameEntity(sf::Texture &img,int nbrFrame,int nbrLigne,float height, float width,float offsetColX,float offsetColY,bool col);
         sf::FloatRect GetRect()const;
         sf::FloatRect GetMovedRect(const float moveX,const float moveY)const;
         float GetVelx()const;

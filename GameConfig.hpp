@@ -3,7 +3,7 @@
 
 
 struct imgAnim{
-    sf::Image img;
+    sf::Texture img;
     int nbrCollum;
     int nbrLine;
 };

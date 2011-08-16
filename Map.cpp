@@ -63,9 +63,13 @@ Type MapTile::Tile(float x, float y){
 void MapTile::Draw(){
     cout<<"FPS="<</*1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_playerOne->GetPosition().x<<" y="<<m_playerOne->GetPosition().y<<" vely="<<m_playerOne->GetVely()<<" velx="<<m_playerOne->GetVelx()<<endl;
     //! On affiche les tiles du background
-    m_app->Draw(sf::Sprite(m_background.GetImage()));
+    m_app->Draw(sf::Sprite(m_background.GetTexture()));
     //! On affiche les tiles du foreground
-    m_app->Draw(sf::Sprite(m_map.GetImage()));
+    m_app->Draw(sf::Sprite(m_map.GetTexture()));
+    sf::Sprite foo(m_ImgTypeTile);
+    sf::Image ff=m_ImgTypeTile.CopyToImage();
+    foo.SetSubRect(sf::IntRect(0,0,30,30));
+    m_app->Draw(foo);
     //! On affiche le personnage et ces éléments
     m_app->Draw(*m_playerOne);
     m_playerOne->Drawing(m_app);
@@ -94,7 +98,6 @@ vector<Type> & MapTile::operator [] (int X){
 void MapTile::LoadMap(){
     map<string,string> levelConfig;
 	int typeSpawn1,typeSpawn2;
-	int theTile;
 	sf::Vector2f backbackCoor;
 
     //! On charge la configuration du niveau
@@ -118,7 +121,7 @@ void MapTile::LoadMap(){
     }
 
     //! Initiation des images temporaire
-    sf::Image tilesetImg,backImg ,backbackImg ,image_schemaImg;
+    sf::Texture tilesetImg,backImg ,backbackImg ,image_schemaImg;
     tilesetImg.LoadFromFile(levelConfig["mappath"]);
     backImg.LoadFromFile(levelConfig["backpath"]);
 ///    backbackImg.LoadFromFile(levelConfig["backbackpath"]);
@@ -154,7 +157,7 @@ void MapTile::LoadMap(){
         int y =atoi(pElem->Attribute("y"));
 
         Type newTile;
-        newTile.colorPix = image_schemaImg.GetPixel(x, y);
+        newTile.colorPix = image_schemaImg.CopyToImage().GetPixel(x, y);
         newTile.zoneRect=sf::IntRect(x*GameConfig::g_config["tilewidth"], y*GameConfig::g_config["tileheight"], GameConfig::g_config["tilewidth"], GameConfig::g_config["tileheight"]);
 
         if(atoi(pElem->Attribute("spawn"))==1)typeSpawn1=m_typeList.size();
@@ -172,12 +175,14 @@ void MapTile::LoadMap(){
     }
 
 	//! Charge le niveau
+	int theTile;
     m_map.Create(m_width*GameConfig::g_config["tilewidth"],m_height*GameConfig::g_config["tileheight"]);
     for(int it=0;it<m_width;it++){
         vector<Type> tileList2;
         m_tileSet.insert(m_tileSet.end(),tileList2);
         for(int it2=0;it2< m_height;it2++){
-            theTile=FindType(tilesetImg.GetPixel(it, it2));
+            theTile=FindType(tilesetImg.CopyToImage().GetPixel(it, it2));
+            cout<<"Color r="<<(int)tilesetImg.CopyToImage().GetPixel(it, it2).r<<"Color g="<<(int)tilesetImg.CopyToImage().GetPixel(it, it2).g<<"Color b="<<(int)tilesetImg.CopyToImage().GetPixel(it, it2).b<<endl;
             if(theTile==typeSpawn1){
                 sf::Vector2f spawnLocationOne(it*GameConfig::g_config["tilewidth"] ,(it2+1)*GameConfig::g_config["tileheight"]-GameConfig::g_config["playercollheight"]);
                 m_spawnLocationOne=spawnLocationOne;
@@ -185,7 +190,7 @@ void MapTile::LoadMap(){
             }
             Type theNewTile= m_typeList[theTile];
             theNewTile.tile.SetPosition(it*GameConfig::g_config["tilewidth"],it2*GameConfig::g_config["tileheight"]);
-            theNewTile.tile.SetImage(m_ImgTypeTile);
+            theNewTile.tile.SetTexture(m_ImgTypeTile);
             theNewTile.tile.SetSubRect(m_typeList[theTile].zoneRect);
             m_tileSet[it].insert( m_tileSet[it].end(),theNewTile);
 
@@ -198,10 +203,10 @@ void MapTile::LoadMap(){
 //!    m_background.Draw(backback);
     for(int it=0;it<m_width;it++){
         for(int it2=0;it2< m_height;it2++){
-            theTile=FindType(backImg.GetPixel(it, it2));
+            theTile=FindType(backImg.CopyToImage().GetPixel(it, it2));
             Type theNewTile= m_typeList[theTile];
             theNewTile.tile.SetPosition(it*GameConfig::g_config["tilewidth"],it2*GameConfig::g_config["tileheight"]);
-            theNewTile.tile.SetImage(m_ImgTypeTile);
+            theNewTile.tile.SetTexture(m_ImgTypeTile);
             theNewTile.tile.SetSubRect(m_typeList[theTile].zoneRect);
             if(theNewTile.visible)m_background.Draw(theNewTile.tile);
         }

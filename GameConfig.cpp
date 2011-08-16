@@ -29,8 +29,11 @@ void GameConfig::LoadConfig(){
     pElem=hDoc.FirstChild("img").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
         imgAnim newAnim;
-        sf::Image newImg;
-        newImg.LoadFromFile(pElem->Attribute("path"));
+        sf::Texture newImg;
+        if(!newImg.LoadFromFile(pElem->Attribute("path"))){
+            cerr<<"Image not found: "<<pElem->Attribute("path")<<endl;
+            exit(0);
+        }
         newAnim.img=newImg;
         newAnim.nbrCollum=atoi(pElem->Attribute("nbrCollums"));
         newAnim.nbrLine=atoi(pElem->Attribute("nbrLines"));

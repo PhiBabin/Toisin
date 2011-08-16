@@ -17,9 +17,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "ImgAnim.hpp"
 
-ImgAnim::ImgAnim(const sf::Image &Img, const unsigned int &nbFrame, const unsigned int &line,
+ImgAnim::ImgAnim(const sf::Texture &Img, const unsigned int &nbFrame, const unsigned int &line,
 			const sf::Vector2f &Position, const sf::Vector2f &Scale,float Rotation, const sf::Color &Col)
-: sf::Sprite(Img,Position,Scale,Rotation,Col){
+: sf::Sprite(Img){
+    this->SetPosition(Position);
 	m_animRow=0;
 	//Le constructeur par défaut prend en compte qu'il n'y a aucun offset
 	SetSubRect(sf::IntRect(0,0,Img.GetWidth()/nbFrame,Img.GetHeight()/line));
@@ -42,7 +43,7 @@ void ImgAnim::setFrameDim(const unsigned int &w, const unsigned int &h){
 	sf::IntRect tRect = GetSubRect();
 	SetSubRect(sf::IntRect(tRect.Left,tRect.Top,w,h));
 }
-//void ImgAnim::setImg(const sf::Image &Img,)
+//void ImgAnim::setImg(const sf::Texture &Img,)
 //{
 //	SetSubRect(sf::IntRect(0,0,Img.GetWidth()/nbFrame,Img.GetHeight()/line));
 //}

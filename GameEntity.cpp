@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.*/
 #include "GameEntity.hpp"
 
-GameEntity::GameEntity(sf::Image &img,int nbrFrame,int nbrLigne,float height=0, float width=0, float offsetColX=0,float offsetColY=0,bool col=false):
+GameEntity::GameEntity(sf::Texture &img,int nbrFrame,int nbrLigne,float height=0, float width=0, float offsetColX=0,float offsetColY=0,bool col=false):
  ImgAnim::ImgAnim(img,nbrFrame,nbrLigne),m_velx(0),m_vely(0),m_col(col),m_offsetColX(offsetColX),m_offsetColY(offsetColY),m_colWidth(width),m_colHeight(height){
 }
 float GameEntity::GetVelx()const{
