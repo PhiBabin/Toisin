@@ -57,9 +57,6 @@ void PlayState::loop(){
 
 //    const sf::Input &Input =m_gameEngine->m_app.GetInput();
 //
-//    //! Pauser le jeu
-//   if(Input.IsKeyDown(sf::Key::Return))pause();
-//
 //    //! Control du joueur 1
 //    if(Input.IsKeyDown(sf::Key::L))m_playerOne->Degat(-40);
 //    if(Input.IsKeyDown(sf::Key::X))m_playerOne->Jump();
