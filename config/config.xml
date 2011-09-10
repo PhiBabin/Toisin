@@ -7,8 +7,10 @@
 	<wav name="jump" path="sounds/jump.wav" />
 </sound>
 <config>
-	<option name="screenwidth" value="800" />
+	<option name="screenwidth" value="600" />
 	<option name="screenheight" value="600" />
+	<option name="platwidth" value="30" />
+	<option name="platheight" value="30" />
 	<option name="tilewidth" value="10" />
 	<option name="tileheight" value="10" />
 	<option name="tilesetwidth" value="10" />

@@ -34,7 +34,9 @@ Type MapTile::Tile(float x, float y){
  vector<GameEntity*> * MapTile::GetMapEntity(){
     return &m_mapEntity;
  }
-
+ sf::Vector2i MapTile::GetPlateau(){
+        return m_currentPlateau;
+ }
 
  bool MapTile::CollisionGeneral(const sf::FloatRect playerRect){
     int maxHeight, minHeight, maxWidth, minWidth;
@@ -61,7 +63,10 @@ Type MapTile::Tile(float x, float y){
  }
 
 void MapTile::Draw(){
-    cout<</*"FPS="<<1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_playerOne->GetPosition().x<<" y="<<m_playerOne->GetPosition().y<<" vely="<<m_playerOne->GetVely()<<" velx="<<m_playerOne->GetVelx()<<endl;
+    cout<<m_currentPlateau.x<<" "<<m_currentPlateau.y<</*"FPS="<<1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_playerOne->GetPosition().x<<" y="<<m_playerOne->GetPosition().y<<" vely="<<m_playerOne->GetVely()<<" velx="<<m_playerOne->GetVelx()<<endl;
+
+    m_currentPlateau= sf::Vector2i(m_playerOne->GetPosition().x/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
+                        m_playerOne->GetPosition().y/(GameConfig::g_config["platheight"]*GameConfig::g_config["tilewidth"]));
     //! On affiche les tiles du background
     m_app->Draw(sf::Sprite(m_background.GetTexture()));
     //! On affiche la map
@@ -186,6 +191,7 @@ void MapTile::LoadMap(){
              sf::Vector2f spawnLocationOne(atoi(pElem->Attribute("x")),atoi(pElem->Attribute("y"))-GameConfig::g_config["playercollheight"]);
              m_spawnLocationOne=spawnLocationOne;
              m_playerOne->SetPosition(m_spawnLocationOne);
+             m_currentPlateau= sf::Vector2i(m_spawnLocationOne.x/GameConfig::g_config["platwidth"],m_spawnLocationOne.y/GameConfig::g_config["platheight"]);
         }
     }
 

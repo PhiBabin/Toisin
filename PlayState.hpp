@@ -33,6 +33,7 @@ class PlayState: public GameState {
     private:
         Player *m_playerOne;
         MapTile *m_map;
+        sf::View m_camera;
         bool m_start;
 
         vector<GameEntity*> *m_mapEntity;

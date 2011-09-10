@@ -31,6 +31,9 @@ PlayState::PlayState(GameEngine* theGameEngine): m_playerOne(0),m_map(0)
 
     m_mapEntity=m_map->GetMapEntity();
     m_playerOne->SetMapObject(m_mapEntity);
+    m_camera = m_gameEngine->m_app.GetDefaultView();
+    m_camera.Zoom(0.5);
+     m_gameEngine->m_app.SetView(m_camera);
 }
 /**
     Initialisation des éléments du jeu
@@ -73,8 +76,14 @@ void PlayState::loop(){
     movePlayer(*m_playerOne);
 
  //! Déplacement de la caméra
-    m_gameEngine->m_app.SetView(sf::View(m_playerOne->GetViewRect()));
-
+  //  m_gameEngine->m_app.SetView(sf::View(m_playerOne->GetViewRect()));
+//    m_camera.SetCenter(sf::Vector2f(m_map->GetPlateau().x*GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]+GameConfig::g_config["screenwidth"]/2,
+//                        m_map->GetPlateau().y*GameConfig::g_config["platheight"]*GameConfig::g_config["tileheight"]));
+    m_camera=sf::View(sf::FloatRect(m_map->GetPlateau().x*GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"],
+                    m_map->GetPlateau().y*GameConfig::g_config["platheight"]*GameConfig::g_config["tileheight"],
+                    GameConfig::g_config["screenwidth"]/2,
+                    GameConfig::g_config["screenheight"]/2));
+    m_gameEngine->m_app.SetView(m_camera);
  //! Déplacement des objets
     moveObject();
 }
@@ -155,7 +164,7 @@ void PlayState::movePlayer(Player &player){
 
     //! On vérifie si le mouvement envisagé cause une collision
     if(!player.CollisionGeneral(player.GetMovedPlayerRect(movHor,movVer),kill)&&movHor<GameConfig::g_config["tileheight"]&&movVer<GameConfig::g_config["tilewidth"])player.Move(movHor,movVer);
-    else player.SetVely(0);
+    else player.SetVely(GameConfig::g_config["tileheight"]-3);
 
     //! Ouch!
     if(kill)player.Degat(200);

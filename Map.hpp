@@ -35,14 +35,15 @@ class MapTile{
         bool CollisionTile(float x,float y);
         Type Tile(float x, float y);
         vector<GameEntity*> * GetMapEntity();
+        sf::Vector2i GetPlateau();
         bool CollisionGeneral(const sf::FloatRect playerRect);
         ~MapTile();
 
         //! Public variable
 		int m_width, m_height;
 		sf::Vector2f m_spawnLocationOne;
-		sf::Vector2f m_spawnLocationTwo;
 	private:
+		sf::Vector2i m_currentPlateau;
         sf::RenderWindow *m_app;
 		sf::Texture m_ImgTypeTile;
 		sf::Sprite m_drawSprite;
