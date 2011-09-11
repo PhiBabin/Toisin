@@ -30,6 +30,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define BOUGE true
 #define IMMOBILE false
 
+#define VIDE 0
+
+
+#define RED 1
+#define YELLOW 2
+#define BLUE 3
+#define GREEN 4
+#define VIOLET 5
+#define ORANGE 6
+#define WHITE 7
+
 #include <iostream>
 #include <sstream>
 #include <fstream>

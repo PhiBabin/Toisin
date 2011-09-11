@@ -28,7 +28,6 @@ PlayState::PlayState(GameEngine* theGameEngine): m_playerOne(0),m_map(0)
     m_playerOne= new Player(&m_map);
 
     m_map =new MapTile(&(*m_gameEngine).m_app,m_playerOne);
-
     m_mapEntity=m_map->GetMapEntity();
     m_playerOne->SetMapObject(m_mapEntity);
     m_camera = m_gameEngine->m_app.GetDefaultView();
@@ -56,7 +55,6 @@ void PlayState::loop(){
     m_playerOne->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
     m_playerOne->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
     if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Z))m_playerOne->Shoot();
-
 
 //    const sf::Input &Input =m_gameEngine->m_app.GetInput();
 //

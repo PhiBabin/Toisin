@@ -75,9 +75,9 @@ void GameEngine::changeState(unsigned int frontState){
 
 }
 GameEngine::~GameEngine(){
-    for(unsigned int i=1;i<m_gameState.size();i++){
-        delete m_gameState.at(i);
-    }
+//    for(unsigned int i=1;i<m_gameState.size();i++){
+//        delete m_gameState.at(i);
+//    }
    cout<<"  /GameEngine::delete"<<endl;
 }
 

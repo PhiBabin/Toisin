@@ -55,12 +55,12 @@ void Player::Turn(bool left, bool right){
     if(left&&!right){
         m_moving=true;
         m_direction=GAUCHE;
-        m_velx=-75;
+        m_velx=-50;
     }
     else if(!left&&right){
         m_moving=true;
         m_direction=DROITE;
-        m_velx=75;
+        m_velx=50;
     }
     else{
         m_moving=false;

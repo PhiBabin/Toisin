@@ -18,9 +18,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define MAP_HPP_INCLUDED
 struct Type{
     //! Propriétés
-	bool visible, solid, kill;
-	//! La couleur correspondante
-	sf::Color   colorPix;
+	bool visible, solid, kill, boomer, isExploded;
+	//! Propriété pour un block explosif
+	int color;
+	PausableClock boom;
 	//! Le rectangle visible du tileset
 	sf::IntRect zoneRect;
 	sf::Sprite tile;};
@@ -30,10 +31,9 @@ class MapTile{
         MapTile(sf::RenderWindow *App,Player *playerOne);
 		void LoadMap();
 		void Draw();
-        vector<Type> & operator [] (int X);
-        unsigned char FindType(sf::Color Pix);
         bool CollisionTile(float x,float y);
         Type Tile(float x, float y);
+        void Explode(int x, int y);
         vector<GameEntity*> * GetMapEntity();
         sf::Vector2i GetPlateau();
         bool CollisionGeneral(const sf::FloatRect playerRect);
@@ -46,8 +46,9 @@ class MapTile{
 		sf::Vector2i m_currentPlateau;
         sf::RenderWindow *m_app;
 		sf::Texture m_ImgTypeTile;
-		sf::Sprite m_drawSprite;
 		vector <vector<Type> > m_tileSet;
+		vector <vector<Type> > m_blankTileSet;
+		vector <vector<Type> > *m_foo;
 		vector <Type> m_typeList;
 		vector <GameEntity*> m_mapEntity;
 		Player *m_playerOne;
