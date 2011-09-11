@@ -16,9 +16,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.*/
 
 #include "Map.hpp"
-MapTile::MapTile():m_app(NULL),m_playerOne(NULL){}
-MapTile::MapTile(sf::RenderWindow *App, Player *playerOne):
-m_width(0),m_height(0),m_app(App),m_playerOne(playerOne){
+MapTile::MapTile():m_app(NULL),m_player(NULL){}
+MapTile::MapTile(sf::RenderWindow *App, Player *player):
+m_width(0),m_height(0),m_app(App),m_player(player){
 
     LoadMap();
     cout<<" LIKE BOUSE"<<m_tileSet.at(2).at(2).tile.GetTexture()<<m_ImgTypeTile.GetHeight()<<endl;
@@ -47,6 +47,9 @@ void MapTile::Explode(int x, int y){
     }
     //exit(0);
     m_tileSet[x][y]=m_typeList[VIDE];
+    m_mapEntity.push_back(new GameAnim(GameConfig::g_imgManag["boom"].img,GameConfig::GameConfig::g_imgManag["boom"].nbrCollum,GameConfig::GameConfig::g_imgManag["boom"].nbrLine));
+    m_mapEntity.back()->SetPosition(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"]);
+    m_mapEntity.back()->setDelay(0.1);
 }
 
  vector<GameEntity*> * MapTile::GetMapEntity(){
@@ -84,23 +87,23 @@ void MapTile::Explode(int x, int y){
  }
 
 void MapTile::Draw(){
-    cout<<m_currentPlateau.x<<" "<<m_currentPlateau.y<</*"FPS="<<1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_playerOne->GetPosition().x<<" y="<<m_playerOne->GetPosition().y<<" vely="<<m_playerOne->GetVely()<<" velx="<<m_playerOne->GetVelx()<<endl;
+    cout<<m_currentPlateau.x<<" "<<m_currentPlateau.y<</*"FPS="<<1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_player->GetPosition().x<<" y="<<m_player->GetPosition().y<<" vely="<<m_player->GetVely()<<" velx="<<m_player->GetVelx()<<endl;
 
-    m_currentPlateau= sf::Vector2i(m_playerOne->GetPosition().x/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
-                        m_playerOne->GetPosition().y/(GameConfig::g_config["platheight"]*GameConfig::g_config["tilewidth"]));
+    m_currentPlateau= sf::Vector2i(m_player->GetPosition().x/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
+                        m_player->GetPosition().y/(GameConfig::g_config["platheight"]*GameConfig::g_config["tilewidth"]));
     //! On affiche les tiles du background
     m_app->Draw(sf::Sprite(m_background.GetTexture()));
     //! On affiche la map
     //m_app->Draw(sf::Sprite(m_map.GetTexture()));
-    float falling=0;
+    float alphaLevel=0;
     for(int y=0;y<m_height;y++){
         for(int x=0;x<m_width;x++){
-//!            if((m_tileSet.at(x)).at(y).fall&& (m_tileSet.at(x)).at(y).touch){
-//!                falling=(m_tileSet.at(x)).at(y).tile.GetColor().a-0.2*m_app->GetFrameTime();
-//!                if(falling<0)falling=0;
-//!                (m_tileSet.at(x)).at(y).tile.SetColor(sf::Color(255,255,255,falling));
-//!            }
-            if(m_tileSet[x][y].isExploded && m_tileSet[x][y].boom.GetElapsedTime()>=500){
+            if(m_tileSet[x][y].fall && m_tileSet[x][y].touch){
+                alphaLevel=m_tileSet[x][y].tile.GetColor().a - 0.2*m_app->GetFrameTime();
+                if(alphaLevel<0)alphaLevel=0;
+                m_tileSet[x][y].tile.SetColor(sf::Color(255,255,255,alphaLevel));
+            }
+            if(m_tileSet[x][y].isExploded && m_tileSet[x][y].boom.GetElapsedTime()>=125){
                 Explode(x,y);
                 m_tileSet[x][y]=m_typeList[VIDE];
             }
@@ -111,8 +114,8 @@ void MapTile::Draw(){
     }
 
     //! On affiche le personnage et ces éléments
-    m_app->Draw(*m_playerOne);
-    m_playerOne->Drawing(m_app);
+    m_app->Draw(*m_player);
+    m_player->Drawing();
     //! On affiche les objets de la carte
     for(unsigned int i=0;i<m_mapEntity.size();i++){
         if((m_mapEntity.at(i))->isDelete()){
@@ -171,6 +174,8 @@ void MapTile::LoadMap(){
         newTile.solid=true;
         newTile.isExploded=false;
         newTile.boomer=false;
+        newTile.fall=false;
+        newTile.touch=false;
         newTile.color=0;
 
         newTile.tile.SetTexture(m_ImgTypeTile);
@@ -194,6 +199,10 @@ void MapTile::LoadMap(){
                 newTile.boomer=true;
             }
 
+            if(string(elemProp->Attribute("name"))=="fall"&& atoi(elemProp->Attribute("value"))==1){
+                newTile.fall=true;
+            }
+
             if(string(elemProp->Attribute("name"))=="color"){
                 newTile.color=atoi(elemProp->Attribute("value"));
             }
@@ -206,7 +215,7 @@ void MapTile::LoadMap(){
         if(string(pElem->Attribute("name"))=="spawn"){
              sf::Vector2f spawnLocationOne(atoi(pElem->Attribute("x")),atoi(pElem->Attribute("y"))-GameConfig::g_config["playercollheight"]);
              m_spawnLocationOne=spawnLocationOne;
-             m_playerOne->SetPosition(m_spawnLocationOne);
+             m_player->SetPosition(m_spawnLocationOne);
              m_currentPlateau= sf::Vector2i(m_spawnLocationOne.x/GameConfig::g_config["platwidth"],m_spawnLocationOne.y/GameConfig::g_config["platheight"]);
         }
     }

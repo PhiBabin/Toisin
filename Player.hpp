@@ -21,9 +21,11 @@ class MapTile;
 class Player:public ImgAnim{
     public:
     //! Construteur
-        Player(MapTile **map);
+        Player(sf::RenderWindow *App,MapTile **map);
+    //! Déplace le player
+        void MovePlayer();
     //! Affiche
-        void Drawing(sf::RenderWindow* app);
+        void Drawing();
     //! Retourne le rectangle de Camera
         sf::FloatRect GetViewRect();
     //! Retourne le rectangle de collision
@@ -31,8 +33,7 @@ class Player:public ImgAnim{
         sf::FloatRect GetMovedPlayerRect(const float moveX,const float moveY);
     //! Collision
         bool CollisionGeneral(const sf::FloatRect playerRect,bool &kill);
-        bool CollisionHorizontal(const sf::FloatRect playerRect, bool &gauche, bool &droite,int &solidLimit);
-        bool CollisionVertical(const sf::FloatRect playerRect, bool &haut, bool &bas,int &solidLimit);
+        bool CollisionVertical(const sf::FloatRect playerRect, bool &haut, bool &bas);
         void SetBottomCollision(bool is);
         bool GetBottomCollision() const;
     //! Saut
@@ -51,7 +52,7 @@ class Player:public ImgAnim{
         void Degat(int degats);
         bool IsDead();
     //! Velocité
-        void Gravity(sf::RenderWindow &app);
+        void Gravity();
         float GetVelx();
         float GetVely();
         void SetVelx(float nx);
@@ -61,6 +62,7 @@ class Player:public ImgAnim{
     //! Déconstruteur
         ~Player();
     private:
+        sf::RenderWindow *m_app;
         MapTile **m_map;
         vector<GameEntity*> *m_listObject;
 

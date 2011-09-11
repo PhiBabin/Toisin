@@ -31,7 +31,7 @@ class PlayState: public GameState {
         void movePlayer(Player &player);
         virtual ~PlayState();
     private:
-        Player *m_playerOne;
+        Player *m_player;
         MapTile *m_map;
         sf::View m_camera;
         bool m_start;

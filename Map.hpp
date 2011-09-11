@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define MAP_HPP_INCLUDED
 struct Type{
     //! Propriétés
-	bool visible, solid, kill, boomer, isExploded;
+	bool visible, solid, kill, boomer, isExploded, fall ,touch;
 	//! Propriété pour un block explosif
 	int color;
 	PausableClock boom;
@@ -51,7 +51,7 @@ class MapTile{
 		vector <vector<Type> > *m_foo;
 		vector <Type> m_typeList;
 		vector <GameEntity*> m_mapEntity;
-		Player *m_playerOne;
+		Player *m_player;
 		sf::RenderTexture m_map;
 		sf::RenderTexture m_background;
 };

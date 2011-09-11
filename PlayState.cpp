@@ -21,15 +21,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /**
     Construction des éléments du jeu
 **/
-PlayState::PlayState(GameEngine* theGameEngine): m_playerOne(0),m_map(0)
+PlayState::PlayState(GameEngine* theGameEngine): m_player(0),m_map(0)
 ,m_gameEngine(theGameEngine){
 
 
-    m_playerOne= new Player(&m_map);
+    m_player= new Player(&(*m_gameEngine).m_app,&m_map);
 
-    m_map =new MapTile(&(*m_gameEngine).m_app,m_playerOne);
+    m_map =new MapTile(&(*m_gameEngine).m_app,m_player);
     m_mapEntity=m_map->GetMapEntity();
-    m_playerOne->SetMapObject(m_mapEntity);
+    m_player->SetMapObject(m_mapEntity);
     m_camera = m_gameEngine->m_app.GetDefaultView();
     m_camera.Zoom(0.5);
      m_gameEngine->m_app.SetView(m_camera);
@@ -51,19 +51,19 @@ void PlayState::loop(){
 
 
     //! Control du joueur 1
-    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::X))m_playerOne->Jump();
-    m_playerOne->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
-    m_playerOne->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
-    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Z))m_playerOne->Shoot();
+    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::X))m_player->Jump();
+    m_player->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
+    m_player->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Z))m_player->Shoot();
 
 //    const sf::Input &Input =m_gameEngine->m_app.GetInput();
 //
 //    //! Control du joueur 1
-//    if(Input.IsKeyDown(sf::Key::L))m_playerOne->Degat(-40);
-//    if(Input.IsKeyDown(sf::Key::X))m_playerOne->Jump();
-//    if(Input.IsKeyDown(sf::Key::Z))m_playerOne->Shoot();
-//    m_playerOne->TurnUp(Input.IsKeyDown(sf::Key::Up));
-//    m_playerOne->Turn(Input.IsKeyDown(sf::Key::Left),Input.IsKeyDown(sf::Key::Right));
+//    if(Input.IsKeyDown(sf::Key::L))m_player->Degat(-40);
+//    if(Input.IsKeyDown(sf::Key::X))m_player->Jump();
+//    if(Input.IsKeyDown(sf::Key::Z))m_player->Shoot();
+//    m_player->TurnUp(Input.IsKeyDown(sf::Key::Up));
+//    m_player->Turn(Input.IsKeyDown(sf::Key::Left),Input.IsKeyDown(sf::Key::Right));
 
 
     /**
@@ -71,10 +71,11 @@ void PlayState::loop(){
     */
 
  //! Déplacement du personnage 1
-    movePlayer(*m_playerOne);
+    m_player->MovePlayer();
+//    movePlayer(*m_player);
 
  //! Déplacement de la caméra
-  //  m_gameEngine->m_app.SetView(sf::View(m_playerOne->GetViewRect()));
+  //  m_gameEngine->m_app.SetView(sf::View(m_player->GetViewRect()));
 //    m_camera.SetCenter(sf::Vector2f(m_map->GetPlateau().x*GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]+GameConfig::g_config["screenwidth"]/2,
 //                        m_map->GetPlateau().y*GameConfig::g_config["platheight"]*GameConfig::g_config["tileheight"]));
     m_camera=sf::View(sf::FloatRect(m_map->GetPlateau().x*GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"],
@@ -90,7 +91,7 @@ void PlayState::loop(){
     Appelé lors d'un changement de state
 **/
 void PlayState::pause(){
-    m_playerOne->Pause();
+    m_player->Pause();
     for(unsigned int i=0;i<m_mapEntity->size();i++){
         m_mapEntity->at(i)->pause();
     }
@@ -101,7 +102,7 @@ void PlayState::pause(){
     Démarrage après une pause
 **/
 void PlayState::resume(){
-    m_playerOne->Resume();
+    m_player->Resume();
     for(unsigned int i=0;i<m_mapEntity->size();i++){
         if(!m_mapEntity->at(i)->isStop())m_mapEntity->at(i)->play();
     }
@@ -127,45 +128,45 @@ void PlayState::draw(){
     Déplacement d'un Player dans la map
 **/
 void PlayState::movePlayer(Player &player){
-    float movHor=0;
-    float movVer=0;
-    int limitVer=0;
-    int limitHor=0;
-    float movHorTest=player.GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f;
-    float movVerTest=player.GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f;
-    bool bas=false, haut=false, gauche=false, droite=false, kill=false;
-    //! On vérifie les collisions horizontals
-    if(!player.CollisionHorizontal(player.GetMovedPlayerRect(movHorTest,0),gauche,droite,limitHor)){//! Pas de collision
-        movHor=movHorTest;
-    }
-    else{//! Sinon on reposition le joueur
-        player.SetVelx(0);
-        if(gauche)movHor=((((limitHor+1)*GameConfig::g_config["tilewidth"]))-player.GetPosition().x)/1000.f;
-        if(droite)movHor=((((limitHor)*GameConfig::g_config["tilewidth"]))-GameConfig::g_config["playercollwidth"]-player.GetPosition().x)/1000.f;
-    }
-
-    //! On vérifie les collisions vertical
-    if(!player.CollisionVertical(player.GetMovedPlayerRect(0,movVerTest),haut,bas,limitVer)){//! Pas de collision
-        player.Gravity(m_gameEngine->m_app);
-        movVer=movVerTest;
-    }
-    else{//! Sinon on reposition le joueur
-        if(haut){//! Si l'on touche le haut
-            player.SetVely(0);
-        }
-        if(bas){//! Si l'on touche le sol
-            if(!player.GetBottomCollision())movVer=(player.GetPosition().y-(limitVer*GameConfig::g_config["tileheight"])+GameConfig::g_config["playercollheight"])/1000.f;
-            player.UnlockJump();
-            player.SetBottomCollision(true);
-        }
-    }
-
-    //! On vérifie si le mouvement envisagé cause une collision
-    if(!player.CollisionGeneral(player.GetMovedPlayerRect(movHor,movVer),kill)&&movHor<GameConfig::g_config["tileheight"]&&movVer<GameConfig::g_config["tilewidth"])player.Move(movHor,movVer);
-    else player.SetVely(GameConfig::g_config["tileheight"]-3);
-
-    //! Ouch!
-    if(kill)player.Degat(200);
+//    float movHor=0;
+//    float movVer=0;
+//    int limitVer=0;
+//    int limitHor=0;
+//    float movHorTest=player.GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f;
+//    float movVerTest=player.GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f;
+//    bool bas=false, haut=false, gauche=false, droite=false, kill=false;
+//    //! On vérifie les collisions horizontals
+//    if(!player.CollisionHorizontal(player.GetMovedPlayerRect(movHorTest,0),gauche,droite,limitHor)){//! Pas de collision
+//        movHor=movHorTest;
+//    }
+//    else{//! Sinon on reposition le joueur
+//        player.SetVelx(0);
+//        if(gauche)movHor=((((limitHor+1)*GameConfig::g_config["tilewidth"]))-player.GetPosition().x)/1000.f;
+//        if(droite)movHor=((((limitHor)*GameConfig::g_config["tilewidth"]))-GameConfig::g_config["playercollwidth"]-player.GetPosition().x)/1000.f;
+//    }
+//
+//    //! On vérifie les collisions vertical
+//    if(!player.CollisionVertical(player.GetMovedPlayerRect(0,movVerTest),haut,bas,limitVer)){//! Pas de collision
+//        player.Gravity(m_gameEngine->m_app);
+//        movVer=movVerTest;
+//    }
+//    else{//! Sinon on reposition le joueur
+//        if(haut){//! Si l'on touche le haut
+//            player.SetVely(0);
+//        }
+//        if(bas){//! Si l'on touche le sol
+//            if(!player.GetBottomCollision())movVer=(player.GetPosition().y-(limitVer*GameConfig::g_config["tileheight"])+GameConfig::g_config["playercollheight"])/1000.f;
+//            player.UnlockJump();
+//            player.SetBottomCollision(true);
+//        }
+//    }
+//
+//    //! On vérifie si le mouvement envisagé cause une collision
+//    if(!player.CollisionGeneral(player.GetMovedPlayerRect(movHor,movVer),kill)&&movHor<GameConfig::g_config["tileheight"]&&movVer<GameConfig::g_config["tilewidth"])player.Move(movHor,movVer);
+//    else player.SetVely(GameConfig::g_config["tileheight"]-3);
+//
+//    //! Ouch!
+//    if(kill)player.Degat(200);
 }
 
 /**
@@ -177,11 +178,11 @@ void PlayState::moveObject(){
             //! On affiche détermine le rectangle de l'object
             sf::FloatRect Rect=m_mapEntity->at(i)->GetMovedRect(m_mapEntity->at(i)->GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f,m_mapEntity->at(i)->GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f);
             //! On vérifie si l'object touche le joueur si oui on supprimer l'objet et crée un animation d'un explosion
-            if((m_playerOne->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_playerOne))){
+            if((m_player->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_player))){
 //                //! On crée l'animation
 //                m_mapEntity->push_back(new GameAnim(GameConfig::g_imgManag["explosion"].img,GameConfig::GameConfig::g_imgManag["explosion"].nbrCollum,GameConfig::GameConfig::g_imgManag["explosion"].nbrLine));
-//                if(m_playerOne->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_playerOne))
-//                m_mapEntity->back()->SetPosition(m_playerOne->GetPosition().x+rand() *-3.f /RAND_MAX + 3.f,m_playerOne->GetPosition().y+rand() *-5.f /RAND_MAX + 2.f);
+//                if(m_player->GetPlayerRect().Intersects(Rect) && m_mapEntity->at(i)->collisionEffect(*m_player))
+//                m_mapEntity->back()->SetPosition(m_player->GetPosition().x+rand() *-3.f /RAND_MAX + 3.f,m_player->GetPosition().y+rand() *-5.f /RAND_MAX + 2.f);
 //                m_mapEntity->back()->Move(0,5);
 //                m_mapEntity->back()->setDelay(0.1);
                 //! On crée libère la mémoire de le l'instance de l'objet
@@ -212,6 +213,6 @@ void PlayState::moveObject(){
     Déconstruction des éléments du jeu
 **/
 PlayState::~PlayState(){
-    delete m_playerOne;
+    delete m_player;
     delete m_map;
 }
