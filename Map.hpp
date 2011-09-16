@@ -31,9 +31,10 @@ class MapTile{
         MapTile(sf::RenderWindow *App,Player *playerOne);
 		void LoadMap();
 		void Draw();
-        bool CollisionTile(float x,float y);
+       // bool CollisionTile(float x,float y);
         Type Tile(float x, float y);
         void Explode(int x, int y);
+        void PlanteauTransition(sf::Vector2i n);
         vector<GameEntity*> * GetMapEntity();
         sf::Vector2i GetPlateau();
         bool CollisionGeneral(const sf::FloatRect playerRect);
@@ -42,11 +43,11 @@ class MapTile{
         //! Public variable
 		int m_width, m_height;
 		sf::Vector2f m_spawnLocationOne;
+		vector <vector<Type> > m_tileSet;
 	private:
 		sf::Vector2i m_currentPlateau;
         sf::RenderWindow *m_app;
 		sf::Texture m_ImgTypeTile;
-		vector <vector<Type> > m_tileSet;
 		vector <vector<Type> > m_blankTileSet;
 		vector <vector<Type> > *m_foo;
 		vector <Type> m_typeList;

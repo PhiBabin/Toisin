@@ -70,6 +70,7 @@ using namespace std;
 
 #include "GameEntity.hpp"
 #include "GameAnim.hpp"
+#include "GameItem.hpp"
 #include "GameBullet.hpp"
 
 #include "Player.hpp"
@@ -77,6 +78,7 @@ using namespace std;
 
 #include "GameEntity.cpp"
 #include "GameAnim.cpp"
+#include "GameItem.cpp"
 #include "GameBullet.cpp"
 
 #include "Player.cpp"

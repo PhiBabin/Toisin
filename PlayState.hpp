@@ -28,7 +28,6 @@ class PlayState: public GameState {
         virtual void GetEvents(sf::Event eventNew);
         virtual void draw();
         void moveObject();
-        void movePlayer(Player &player);
         virtual ~PlayState();
     private:
         Player *m_player;

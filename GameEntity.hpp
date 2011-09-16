@@ -20,11 +20,13 @@ class Player;
 
 class GameEntity:public ImgAnim{
     public:
-        GameEntity(sf::Texture &img,int nbrFrame,int nbrLigne,float height, float width,float offsetColX,float offsetColY,bool col);
+        GameEntity(sf::Texture &img,int nbrFrame,int nbrLigne,bool col,float height, float width);
         sf::FloatRect GetRect()const;
         sf::FloatRect GetMovedRect(const float moveX,const float moveY)const;
         float GetVelx()const;
         float GetVely()const;
+        void SetVelx(float velx);
+        void SetVely(float vely);
         virtual bool isDraw();
         virtual bool isDelete()const;
         virtual bool isCollision()const;

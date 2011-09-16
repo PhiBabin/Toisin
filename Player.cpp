@@ -78,7 +78,7 @@ void Player::MovePlayer(){
         SetVelx(0);
         if(movHorTest>0){
             for(float xp=movHorTest;xp>=0 && !block;xp-=0.01){
-                if(!CollisionGeneral(GetMovedPlayerRect(xp,0),kill)){
+                if(!CollisionGeneral(GetMovedPlayerRect(xp,movVerTest),kill)){
                     block=true;
                     movHor=xp;
                 }
@@ -86,7 +86,7 @@ void Player::MovePlayer(){
         }
         else{
             for(float xp=movHorTest;xp<=0 && !block;xp+=0.01){
-                if(!CollisionGeneral(GetMovedPlayerRect(xp,0),kill)){
+                if(!CollisionGeneral(GetMovedPlayerRect(xp,movVerTest),kill)){
                     block=true;
                     movHor=xp;
                 }
@@ -104,10 +104,9 @@ void Player::MovePlayer(){
         }
         if(bas){//! Si l'on touche le sol
             if(!GetBottomCollision()){
-                //movVer=(GetPosition().y-(limitVer*GameConfig::g_config["tileheight"])+GameConfig::g_config["playercollheight"])/1000.f;
                 if(movVerTest>0){
                     for(float yp=movVerTest;yp>=0 && !block;yp-=0.01){
-                        if(!CollisionVertical(GetMovedPlayerRect(yp,0),haut,bas)){
+                        if(!CollisionGeneral(GetMovedPlayerRect(movHor,yp),kill)){
                             block=true;
                             movVer=yp;
                         }
@@ -115,23 +114,30 @@ void Player::MovePlayer(){
                 }
                 else{
                     for(float yp=movVerTest;yp<=0 && !block;yp+=0.01){
-                        if(!CollisionVertical(GetMovedPlayerRect(yp,0),haut,bas)){
+                        if(!CollisionGeneral(GetMovedPlayerRect(movHor,yp),kill)){
                             block=true;
                             movVer=yp;
                         }
                     }
                 }
             }
+            kill=false;
             UnlockJump();
             SetBottomCollision(true);
         }
-            SetVely(0);
+        SetVely(0);
     }
 
     //! On vérifie si le mouvement envisagé cause une collision
-    if(!CollisionGeneral(GetMovedPlayerRect(movHor,movVer),kill)&&movHor<GameConfig::g_config["tileheight"]&&movVer<GameConfig::g_config["tilewidth"])
-            Move(movHor,movVer);
-    else SetVely(GameConfig::g_config["tileheight"]/2);
+    if(!CollisionGeneral(GetMovedPlayerRect(movHor,movVer),kill)){
+        if(movHor<GameConfig::g_config["tileheight"]&&movVer<GameConfig::g_config["tilewidth"])
+                Move(movHor,movVer);
+        else SetVely(GameConfig::g_config["tileheight"]/2);
+    }
+    else{
+        cout<<"FFFFFFFFFFFFFFFFUUUUUUUUUUUUUUUU-"<<endl;
+       // exit(0);
+    }
 
     //! Ouch!
     if(kill)Degat(200);
@@ -141,16 +147,15 @@ void Player::MovePlayer(){
 sf::FloatRect Player::GetPlayerRect(){
     return sf::FloatRect(GetPosition().x,GetPosition().y,GameConfig::g_config["playercollwidth"],GameConfig::g_config["playercollheight"]);
 }
+
 sf::FloatRect Player::GetMovedPlayerRect(const float moveX,const float moveY){
   return sf::FloatRect(GetPosition().x+moveX,GetPosition().y+moveY,GameConfig::g_config["playercollwidth"],GameConfig::g_config["playercollheight"]);
-}
-sf::FloatRect Player::GetViewRect(){
-   return sf::FloatRect(GetPosition().x-(int)GameConfig::g_config["screenwidth"]/8,GetPosition().y-(int)GameConfig::g_config["screenheight"]/8,(int)GameConfig::g_config["screenwidth"]/4,(int)GameConfig::g_config["screenheight"]/4);
 }
 
 void Player::Gravity(){
         m_vely+=GameConfig::g_config["gravity"]/1000.f*m_app->GetFrameTime();
 }
+
 void Player::Jump(){
     if(!m_jumpLock){
         m_jumpLock=true;
@@ -194,8 +199,8 @@ void Player::Turn(bool left, bool right){
     for(int y=minHeight;y<=maxHeight;y++){
         for(int x=minWidth;x<=maxWidth;x++){
             if(!(x>=(*m_map)->m_width or y>=(*m_map)->m_height)){
-                if((*m_map)->Tile(x,y).kill)kill=true;
-                if((*m_map)->Tile(x,y).solid){
+                    if((*m_map)->Tile(x,y).kill)kill=true;
+                    if((*m_map)->Tile(x,y).solid){
                     //sf::FloatRect  theTile(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"],GameConfig::g_config["tilewidth"],GameConfig::g_config["tileheight"]);
                     //if(playerRect.Intersects(theTile)||theTile.Intersects(playerRect))
                     return true;
@@ -226,6 +231,7 @@ void Player::Turn(bool left, bool right){
                         CollisionVertical=true;
                         if(y*GameConfig::g_config["tileheight"]<=playerRect.Top+playerRect.Height&&y*GameConfig::g_config["tileheight"]>=playerRect.Top){
                             bas=true;
+                            if((*m_map)->Tile(x,y).fall)(*m_map)->m_tileSet.at(x).at(y).touch=true;
                         }
                         if((y+1)*GameConfig::g_config["tileheight"]>=playerRect.Top&&(y+1)*GameConfig::g_config["tileheight"]<=playerRect.Top+playerRect.Height){
                             haut=true;
@@ -299,7 +305,7 @@ void Player::Shoot(){
             if(m_direction==DROITE)velx=100;
         }
 
-        m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,true,this,velx,vely));
+        m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,this,velx,vely,true));
         m_listObject->back()->SetPosition(GetPosition());
         m_listObject->back()->setDelay(0.1);
         m_listObject->back()->SetColor(sf::Color::Red);

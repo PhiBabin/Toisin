@@ -125,51 +125,6 @@ void PlayState::draw(){
 }
 
 /**
-    Déplacement d'un Player dans la map
-**/
-void PlayState::movePlayer(Player &player){
-//    float movHor=0;
-//    float movVer=0;
-//    int limitVer=0;
-//    int limitHor=0;
-//    float movHorTest=player.GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f;
-//    float movVerTest=player.GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f;
-//    bool bas=false, haut=false, gauche=false, droite=false, kill=false;
-//    //! On vérifie les collisions horizontals
-//    if(!player.CollisionHorizontal(player.GetMovedPlayerRect(movHorTest,0),gauche,droite,limitHor)){//! Pas de collision
-//        movHor=movHorTest;
-//    }
-//    else{//! Sinon on reposition le joueur
-//        player.SetVelx(0);
-//        if(gauche)movHor=((((limitHor+1)*GameConfig::g_config["tilewidth"]))-player.GetPosition().x)/1000.f;
-//        if(droite)movHor=((((limitHor)*GameConfig::g_config["tilewidth"]))-GameConfig::g_config["playercollwidth"]-player.GetPosition().x)/1000.f;
-//    }
-//
-//    //! On vérifie les collisions vertical
-//    if(!player.CollisionVertical(player.GetMovedPlayerRect(0,movVerTest),haut,bas,limitVer)){//! Pas de collision
-//        player.Gravity(m_gameEngine->m_app);
-//        movVer=movVerTest;
-//    }
-//    else{//! Sinon on reposition le joueur
-//        if(haut){//! Si l'on touche le haut
-//            player.SetVely(0);
-//        }
-//        if(bas){//! Si l'on touche le sol
-//            if(!player.GetBottomCollision())movVer=(player.GetPosition().y-(limitVer*GameConfig::g_config["tileheight"])+GameConfig::g_config["playercollheight"])/1000.f;
-//            player.UnlockJump();
-//            player.SetBottomCollision(true);
-//        }
-//    }
-//
-//    //! On vérifie si le mouvement envisagé cause une collision
-//    if(!player.CollisionGeneral(player.GetMovedPlayerRect(movHor,movVer),kill)&&movHor<GameConfig::g_config["tileheight"]&&movVer<GameConfig::g_config["tilewidth"])player.Move(movHor,movVer);
-//    else player.SetVely(GameConfig::g_config["tileheight"]-3);
-//
-//    //! Ouch!
-//    if(kill)player.Degat(200);
-}
-
-/**
     Déplacement des objets
 **/
 void PlayState::moveObject(){

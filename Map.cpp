@@ -23,14 +23,21 @@ m_width(0),m_height(0),m_app(App),m_player(player){
     LoadMap();
     cout<<" LIKE BOUSE"<<m_tileSet.at(2).at(2).tile.GetTexture()<<m_ImgTypeTile.GetHeight()<<endl;
 }
- bool MapTile::CollisionTile(float x, float y){
-    return m_tileSet.at(x).at(y).solid;
- }
+// bool MapTile::CollisionTile(float x, float y){
+//    return m_tileSet.at(x).at(y).solid;
+// }
 
 Type MapTile::Tile(float x, float y){
     return m_tileSet.at(x).at(y);
  }
 
+void MapTile::PlanteauTransition(sf::Vector2i n){
+    //! On remet les tiles dans leur état d'origine
+    m_tileSet=m_blankTileSet;
+    //! On efface les animations
+	m_mapEntity.erase(m_mapEntity.begin(),m_mapEntity.end());
+    m_currentPlateau=n;
+}
 void MapTile::Explode(int x, int y){
     int xp,yp;
     for(int i=0;i<4;i++){
@@ -49,7 +56,7 @@ void MapTile::Explode(int x, int y){
     m_tileSet[x][y]=m_typeList[VIDE];
     m_mapEntity.push_back(new GameAnim(GameConfig::g_imgManag["boom"].img,GameConfig::GameConfig::g_imgManag["boom"].nbrCollum,GameConfig::GameConfig::g_imgManag["boom"].nbrLine));
     m_mapEntity.back()->SetPosition(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"]);
-    m_mapEntity.back()->setDelay(0.1);
+    m_mapEntity.back()->setDelay(0.125);
 }
 
  vector<GameEntity*> * MapTile::GetMapEntity(){
@@ -89,8 +96,9 @@ void MapTile::Explode(int x, int y){
 void MapTile::Draw(){
     cout<<m_currentPlateau.x<<" "<<m_currentPlateau.y<</*"FPS="<<1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_player->GetPosition().x<<" y="<<m_player->GetPosition().y<<" vely="<<m_player->GetVely()<<" velx="<<m_player->GetVelx()<<endl;
 
-    m_currentPlateau= sf::Vector2i(m_player->GetPosition().x/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
+    sf::Vector2i newPlateau(m_player->GetPosition().x/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
                         m_player->GetPosition().y/(GameConfig::g_config["platheight"]*GameConfig::g_config["tilewidth"]));
+    if(newPlateau!=m_currentPlateau)PlanteauTransition(newPlateau);
     //! On affiche les tiles du background
     m_app->Draw(sf::Sprite(m_background.GetTexture()));
     //! On affiche la map
@@ -99,8 +107,11 @@ void MapTile::Draw(){
     for(int y=0;y<m_height;y++){
         for(int x=0;x<m_width;x++){
             if(m_tileSet[x][y].fall && m_tileSet[x][y].touch){
-                alphaLevel=m_tileSet[x][y].tile.GetColor().a - 0.2*m_app->GetFrameTime();
-                if(alphaLevel<0)alphaLevel=0;
+                alphaLevel=m_tileSet[x][y].tile.GetColor().a - 0.4*m_app->GetFrameTime();
+                if(alphaLevel<0){
+                    alphaLevel=0;
+                    m_tileSet[x][y].solid=false;
+                }
                 m_tileSet[x][y].tile.SetColor(sf::Color(255,255,255,alphaLevel));
             }
             if(m_tileSet[x][y].isExploded && m_tileSet[x][y].boom.GetElapsedTime()>=125){

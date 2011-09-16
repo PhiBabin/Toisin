@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class GameBullet: public GameEntity{
     public:
-        GameBullet(sf::Texture &img,int nbrFrame,int nbrLigne,int degat,bool setOnFire,Player *from, float velx,float vely,float height, float width,float offsetColX,float offsetColY,bool col);
+        GameBullet(sf::Texture &img,int nbrFrame,int nbrLigne,int degat,Player *from,float velx,float vely, bool col,float height, float width);
         virtual bool isDraw();
         virtual bool isDelete()const;
         virtual bool isCollision()const;
@@ -29,7 +29,6 @@ class GameBullet: public GameEntity{
         virtual ~GameBullet();
     private:
         int m_degat;
-        bool m_setOnFire;
         Player *m_from;
 };
 

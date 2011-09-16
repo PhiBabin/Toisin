@@ -2,7 +2,7 @@
 <img>
 	<anim name="player" path="img/player.png" nbrCollums="4" nbrLines="1" />
 	<sprite name="bullet" path="img/bullet.png" nbrCollums="1" nbrLines="1" />
-	<anim name="boom" path="img/boom.png" nbrCollums="4" nbrLines="1" />
+	<anim name="boom" path="img/boom.png" nbrCollums="5" nbrLines="1" />
 </img>
 <sound>
 	<wav name="jump" path="sounds/jump.wav" />
