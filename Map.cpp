@@ -21,22 +21,38 @@ MapTile::MapTile(sf::RenderWindow *App, Player *player):
 m_width(0),m_height(0),m_app(App),m_player(player){
 
     LoadMap();
-    cout<<" LIKE BOUSE"<<m_tileSet.at(2).at(2).tile.GetTexture()<<m_ImgTypeTile.GetHeight()<<endl;
 }
 // bool MapTile::CollisionTile(float x, float y){
 //    return m_tileSet.at(x).at(y).solid;
 // }
 
 Type MapTile::Tile(float x, float y){
-    return m_tileSet.at(x).at(y);
+    if(x>0 && y>0 && x<=m_width && y<=m_height) return m_tileSet.at(x).at(y);
+    else{
+        cerr<<"[FATAL ERROR] Tile out of range. ("<<x<<" ,"<<y<<")"<<endl;
+        exit(0);
+    }
  }
 
 void MapTile::PlanteauTransition(sf::Vector2i n){
+    m_currentPlateau=n;
+
     //! On remet les tiles dans leur état d'origine
     m_tileSet=m_blankTileSet;
     //! On efface les animations
 	m_mapEntity.erase(m_mapEntity.begin(),m_mapEntity.end());
-    m_currentPlateau=n;
+	//! On recharge les mobs
+	ReloadMob();
+}
+void MapTile::ReloadMob(){
+    for(unsigned int i=0;i<m_mapMob.size();i++){
+        delete m_mapMob.at(i);
+        m_mapMob.erase(m_mapMob.begin()+i);
+    }
+    for(unsigned int m=0;m<m_mobSpawner.size();m++){
+        m_mapMob.push_back(new GameMob(m_mobSpawner[m].type,m_mobSpawner[m].position));
+        m_mapMob.back()->SetColor(GameConfig::NbrToColor(m_mobSpawner[m].color));
+    }
 }
 void MapTile::Explode(int x, int y){
     int xp,yp;
@@ -52,7 +68,6 @@ void MapTile::Explode(int x, int y){
         }
 
     }
-    //exit(0);
     m_tileSet[x][y]=m_typeList[VIDE];
     m_mapEntity.push_back(new GameAnim(GameConfig::g_imgManag["boom"].img,GameConfig::GameConfig::g_imgManag["boom"].nbrCollum,GameConfig::GameConfig::g_imgManag["boom"].nbrLine));
     m_mapEntity.back()->SetPosition(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"]);
@@ -96,8 +111,8 @@ void MapTile::Explode(int x, int y){
 void MapTile::Draw(){
     cout<<m_currentPlateau.x<<" "<<m_currentPlateau.y<</*"FPS="<<1.f/(m_app->GetFrameTime())*1000<<*/"Joueur 1 x="<<m_player->GetPosition().x<<" y="<<m_player->GetPosition().y<<" vely="<<m_player->GetVely()<<" velx="<<m_player->GetVelx()<<endl;
 
-    sf::Vector2i newPlateau(m_player->GetPosition().x/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
-                        m_player->GetPosition().y/(GameConfig::g_config["platheight"]*GameConfig::g_config["tilewidth"]));
+    sf::Vector2i newPlateau((m_player->GetPosition().x+GameConfig::g_config["playercollwidth"]/2)/(GameConfig::g_config["platwidth"]*GameConfig::g_config["tilewidth"]),
+                        (m_player->GetPosition().y+GameConfig::g_config["playercollheight"]/2)/(GameConfig::g_config["platheight"]*GameConfig::g_config["tilewidth"]));
     if(newPlateau!=m_currentPlateau)PlanteauTransition(newPlateau);
     //! On affiche les tiles du background
     m_app->Draw(sf::Sprite(m_background.GetTexture()));
@@ -123,10 +138,16 @@ void MapTile::Draw(){
             }
         }
     }
-
-    //! On affiche le personnage et ces éléments
-    m_app->Draw(*m_player);
-    m_player->Drawing();
+    //! On affiche les mobs de la carte
+    for(unsigned int i=0;i<m_mapMob.size();i++){
+        if((m_mapMob.at(i))->isDelete()){
+            delete m_mapMob.at(i);
+            m_mapMob.erase( m_mapMob.begin() + i );
+        }
+        else{
+            m_app->Draw(*(m_mapMob.at(i)));
+        }
+    }
     //! On affiche les objets de la carte
     for(unsigned int i=0;i<m_mapEntity.size();i++){
         if((m_mapEntity.at(i))->isDelete()){
@@ -137,6 +158,10 @@ void MapTile::Draw(){
             m_app->Draw(*(m_mapEntity.at(i)));
         }
     }
+
+    //! On affiche le personnage et ces éléments
+    m_app->Draw(*m_player);
+    m_player->Drawing();
 }
 
 void MapTile::LoadMap(){
@@ -220,16 +245,34 @@ void MapTile::LoadMap(){
         }
         m_typeList[id]=newTile;
     }
-    //! On liste les objets
+    //! On instansifie les entity
     pElem=hDoc.FirstChild("objectgroup").FirstChild().Element();
     for(int i=0; pElem; pElem=pElem->NextSiblingElement()){
-        if(string(pElem->Attribute("name"))=="spawn"){
+        //! Spawn point
+        if(string(pElem->Attribute("type"))=="spawn"){
              sf::Vector2f spawnLocationOne(atoi(pElem->Attribute("x")),atoi(pElem->Attribute("y"))-GameConfig::g_config["playercollheight"]);
              m_spawnLocationOne=spawnLocationOne;
              m_player->SetPosition(m_spawnLocationOne);
              m_currentPlateau= sf::Vector2i(m_spawnLocationOne.x/GameConfig::g_config["platwidth"],m_spawnLocationOne.y/GameConfig::g_config["platheight"]);
         }
+        //! Mob
+        if(string(pElem->Attribute("type"))=="mob"){
+            MobSpawner newMob;
+            newMob.position=sf::Vector2f(atoi(pElem->Attribute("x")) ,atoi(pElem->Attribute("y")));
+            elemProp=TiXmlHandle(pElem).FirstChild("properties").FirstChild().Element();
+            for(; elemProp; elemProp=elemProp->NextSiblingElement()){
+                if(string(elemProp->Attribute("name"))=="type"){
+                    newMob.type=atoi(elemProp->Attribute("value"));
+                }
+                if(string(elemProp->Attribute("name"))=="color"){
+                    newMob.color=atoi(elemProp->Attribute("value"));
+                }
+            }
+            m_mobSpawner.push_back(newMob);
+        }
     }
+    //! On charge les mobs
+    ReloadMob();
 
 	//! Charge le background
     m_background.Create(m_width*tilewidth,m_height*tileheight);

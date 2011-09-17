@@ -135,8 +135,6 @@ void Player::MovePlayer(){
         else SetVely(GameConfig::g_config["tileheight"]/2);
     }
     else{
-        cout<<"FFFFFFFFFFFFFFFFUUUUUUUUUUUUUUUU-"<<endl;
-       // exit(0);
     }
 
     //! Ouch!
@@ -187,9 +185,9 @@ void Player::Turn(bool left, bool right){
 }
  bool Player::CollisionGeneral(const sf::FloatRect playerRect,bool &kill){
     int maxHeight, minHeight, maxWidth, minWidth;
-    minHeight=playerRect.Top/GameConfig::g_config["tileheight"];
+    minHeight=(playerRect.Top+1)/GameConfig::g_config["tileheight"];
     minWidth=playerRect.Left/GameConfig::g_config["tilewidth"];
-    maxHeight=(playerRect.Top+playerRect.Height-1)/GameConfig::g_config["tileheight"];
+    maxHeight=((playerRect.Top+1)+playerRect.Height-1)/GameConfig::g_config["tileheight"];
     maxWidth=(playerRect.Left+playerRect.Width-1)/GameConfig::g_config["tilewidth"];
 
     if(minHeight<0)minHeight=0;
@@ -201,8 +199,6 @@ void Player::Turn(bool left, bool right){
             if(!(x>=(*m_map)->m_width or y>=(*m_map)->m_height)){
                     if((*m_map)->Tile(x,y).kill)kill=true;
                     if((*m_map)->Tile(x,y).solid){
-                    //sf::FloatRect  theTile(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"],GameConfig::g_config["tilewidth"],GameConfig::g_config["tileheight"]);
-                    //if(playerRect.Intersects(theTile)||theTile.Intersects(playerRect))
                     return true;
                 }
             }
@@ -213,9 +209,9 @@ void Player::Turn(bool left, bool right){
  bool Player::CollisionVertical(const sf::FloatRect playerRect, bool &haut, bool &bas){
     int maxHeight, minHeight, maxWidth, minWidth;
     bool CollisionVertical=false;
-    minHeight=playerRect.Top/GameConfig::g_config["tileheight"];
+    minHeight=(playerRect.Top+1)/GameConfig::g_config["tileheight"];
     minWidth=playerRect.Left/GameConfig::g_config["tilewidth"];
-    maxHeight=(playerRect.Top+playerRect.Height-1)/GameConfig::g_config["tileheight"];
+    maxHeight=(playerRect.Top+playerRect.Height)/GameConfig::g_config["tileheight"];
     maxWidth=(playerRect.Left+playerRect.Width-1)/GameConfig::g_config["tilewidth"];
 
     if(minHeight<0)minHeight=0;
@@ -314,7 +310,16 @@ void Player::Shoot(){
 }
 
 void Player::Drawing(){
-
+    //! Trainé
+   // if(m_shadow.GetElapsedTime()>100){
+//        m_listObject->push_back(new GameAnim(GameConfig::g_imgManag["player"].img,GameConfig::GameConfig::g_imgManag["player"].nbrCollum,GameConfig::GameConfig::g_imgManag["player"].nbrLine));
+//        m_listObject->back()->SetPosition(GetPosition());
+//        m_listObject->back()->setDelay(0.05);
+//        m_listObject->back()->nextFrame();
+//        m_listObject->back()->nextFrame();
+//        m_listObject->back()->FlipX(m_direction);
+//        m_shadow.Reset();
+   // }
 }
 void Player::Pause(){
     m_lastShot.Pause();

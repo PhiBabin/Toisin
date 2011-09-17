@@ -25,6 +25,11 @@ struct Type{
 	//! Le rectangle visible du tileset
 	sf::IntRect zoneRect;
 	sf::Sprite tile;};
+struct MobSpawner{
+    int type;
+    int color;
+    sf::Vector2f position;
+};
 class MapTile{
 	public:
         MapTile();
@@ -34,6 +39,7 @@ class MapTile{
        // bool CollisionTile(float x,float y);
         Type Tile(float x, float y);
         void Explode(int x, int y);
+        void ReloadMob();
         void PlanteauTransition(sf::Vector2i n);
         vector<GameEntity*> * GetMapEntity();
         sf::Vector2i GetPlateau();
@@ -52,6 +58,8 @@ class MapTile{
 		vector <vector<Type> > *m_foo;
 		vector <Type> m_typeList;
 		vector <GameEntity*> m_mapEntity;
+		vector <GameMob*> m_mapMob;
+		vector <MobSpawner> m_mobSpawner;
 		Player *m_player;
 		sf::RenderTexture m_map;
 		sf::RenderTexture m_background;

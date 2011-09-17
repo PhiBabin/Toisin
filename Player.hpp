@@ -77,5 +77,6 @@ class Player:public ImgAnim{
 
         PausableClock m_lastShot;
         PausableClock m_hurt;
+        PausableClock m_shadow;
 };
 #endif // PLAYER_HPP_INCLUDED

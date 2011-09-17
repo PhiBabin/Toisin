@@ -1,6 +1,6 @@
 #include "GameItem.hpp"
 #include "Player.hpp"
-    GameItem::GameItem(sf::Texture &img,int nbrFrame,int nbrLigne,int type):
+GameItem::GameItem(sf::Texture &img,int nbrFrame,int nbrLigne,int type):
     GameEntity(img,nbrFrame,nbrLigne,true)
     ,m_type(type){
      m_colHeight=img.GetHeight()/nbrLigne;
