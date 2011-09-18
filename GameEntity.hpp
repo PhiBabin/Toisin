@@ -17,6 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef GameEntity_H
 #define GameEntity_H
 class Player;
+class MapTile;
 
 class GameEntity:public ImgAnim{
     public:
@@ -27,11 +28,15 @@ class GameEntity:public ImgAnim{
         float GetVely()const;
         void SetVelx(float velx);
         void SetVely(float vely);
+        virtual void Update();
         virtual bool isDraw();
         virtual bool isDelete()const;
         virtual bool isCollision()const;
         virtual bool collisionEffect(Player &player)=0;
         virtual ~GameEntity();
+
+        static MapTile **m_map;
+        static sf::RenderWindow *m_app;
     protected:
         float m_velx;
         float m_vely;

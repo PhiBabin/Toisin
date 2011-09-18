@@ -16,6 +16,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.*/
 #include "GameEntity.hpp"
 
+MapTile **GameEntity::m_map=NULL;
+sf::RenderWindow *GameEntity::m_app=NULL;
+
 GameEntity::GameEntity(sf::Texture &img,int nbrFrame,int nbrLigne,bool col=false,float height=0, float width=0):
  ImgAnim::ImgAnim(img,nbrFrame,nbrLigne),m_velx(0),m_vely(0),m_col(col),m_colWidth(width),m_colHeight(height){
 }
@@ -37,7 +40,9 @@ sf::FloatRect GameEntity::GetRect()const {
 sf::FloatRect GameEntity::GetMovedRect(const float moveX,const float moveY)const{
     return sf::FloatRect(GetPosition().x+moveX,GetPosition().y+moveY,m_colWidth,m_colHeight);
 }
+void GameEntity::Update(){
 
+}
 bool GameEntity::isDraw(){
     return true;
 }

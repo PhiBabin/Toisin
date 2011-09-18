@@ -27,6 +27,9 @@ PlayState::PlayState(GameEngine* theGameEngine): m_player(0),m_map(0)
 
     m_player= new Player(&(*m_gameEngine).m_app,&m_map);
 
+    GameEntity::m_map=&m_map;
+    GameEntity::m_app=&(*m_gameEngine).m_app;
+
     m_map =new MapTile(&(*m_gameEngine).m_app,m_player);
     m_mapEntity=m_map->GetMapEntity();
     m_player->SetMapObject(m_mapEntity);
@@ -45,6 +48,13 @@ void PlayState::init(){
     Exécution des éléments
 **/
 void PlayState::loop(){
+
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::D))
+        cout<<"FPS="<<floor(1.f/(m_gameEngine->m_app.GetFrameTime())*1000)<<endl
+        <<"Joueur 1 x="<<m_player->GetPosition().x<<" y="<<m_player->GetPosition().y<<endl
+        <<"Velx="<<m_player->GetVelx()<<endl
+        <<"Vely="<<m_player->GetVely()<<endl<<endl;
+
     /**
         Gestion des entrées claviers
     */

@@ -29,46 +29,9 @@ m_jumpLock(false),m_colBot(false),m_direction(false),m_lookUp(false),m_moving(fa
 void Player::MovePlayer(){
     float movHor=0;
     float movVer=0;
-    int limitVer=0;
-    int limitHor=0;
     float movHorTest=GetVelx()*m_app->GetFrameTime()/1000.f;
     float movVerTest=GetVely()*m_app->GetFrameTime()/1000.f;
     bool bas=false, haut=false, kill=false,block=false;
-//    sf::Vector2f bestResult(0,0);
-//    if(CollisionGeneral(GetMovedPlayerRect(movHorTest,movVerTest),kill)){
-//        if(movHorTest<0)movHor=-1*movHorTest;
-//        else movHor=movHorTest;
-//
-//        if(movVerTest<0)movVer=-1*movVerTest;
-//        else movVer=movVerTest;
-//        for(float xp=movHor;xp>=0;xp-=0.1){
-//            if(movHorTest<0)xp*=-1;
-//            for(float yp=movHor;yp>=0;yp-=0.1){
-//                if(movVerTest<0)yp*=-1;
-//                if(!CollisionGeneral(GetMovedPlayerRect( xp, yp),kill)){
-//                    Move(xp,yp);
-//                    return;
-//                    if( fabs (xp)+ fabs (yp)>fabs(bestResult.x)+ fabs (bestResult.y))
-//                        bestResult=sf::Vector2f(xp,yp);
-//                }
-//                cout<<xp<<" "<<yp<<" - "<<bestResult.x<<" "<<bestResult.y<<endl;
-//                if(movVerTest<0)yp*=-1;
-//            }
-//
-//            if(movHorTest<0)xp*=-1;
-//        }
-//        Move(bestResult.x,bestResult.y);
-//        if(bestResult.y<=0.2 && bestResult.y>=0){
-//            //SetVely(0);
-//            UnlockJump();
-//            SetBottomCollision(true);
-//        }
-//        //exit(0);
-//    }
-//    else{
-//        Move(movHorTest,movVerTest);
-//        Gravity();
-//    }
     //! --------------------------
     //! On vérifie les collisions horizontals
     if(!CollisionGeneral(GetMovedPlayerRect(movHorTest,0),kill)){//! Pas de collision
@@ -179,7 +142,8 @@ void Player::Turn(bool left, bool right){
     }
     else{
         m_moving=false;
-        m_velx*=0.8;
+        if(fabs(m_velx)>0.01)m_velx*=0.8;
+        else m_velx=0;
     }
     FlipX(m_direction);
 }
@@ -302,7 +266,7 @@ void Player::Shoot(){
         }
 
         m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,this,velx,vely,true));
-        m_listObject->back()->SetPosition(GetPosition());
+        m_listObject->back()->SetPosition(GetPosition().x,GetPosition().y+GameConfig::g_config["playercollheight"]/4);
         m_listObject->back()->setDelay(0.1);
         m_listObject->back()->SetColor(sf::Color::Red);
         m_lastShot.Reset();

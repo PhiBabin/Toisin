@@ -6,7 +6,8 @@
 	<anim name="boom" path="img/boom.png" nbrCollums="5" nbrLines="1" />
 </img>
 <enemies>
-	<mob name="killyou" type="1" path="0" x="0" y="0" width="13" height="7" />
+	<mob name="killyou" type="1" path="0" x="0" y="0" width="13" height="8" />
+	<mob name="truc" type="2" path="1" x="0" y="8" width="9" height="15" />
 </enemies>
 <sound>
 	<wav name="jump" path="sounds/jump.wav" />
@@ -21,7 +22,7 @@
 	<option name="tilewidth" value="10" />
 	<option name="tileheight" value="10" />
 
-	<option name="playercollwidth" value="5" />
+	<option name="playercollwidth" value="6" />
 	<option name="playercollheight" value="9" />
 
 	<option name="gravity" value="250" />

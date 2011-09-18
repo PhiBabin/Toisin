@@ -27,7 +27,7 @@ void GameConfig::LoadConfig(){
     TiXmlHandle hDoc(&doc);
     TiXmlHandle hRoot(0);
     TiXmlElement* pElem;
-
+    //! Chargement des textures
     pElem=hDoc.FirstChild("img").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
         imgAnim newAnim;
@@ -41,20 +41,26 @@ void GameConfig::LoadConfig(){
         newAnim.nbrLine=atoi(pElem->Attribute("nbrLines"));
         g_imgManag[pElem->Attribute("name")]=newAnim;
     }
+    //! Chargement des mobs
     pElem=hDoc.FirstChild("enemies").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
-        g_mob[atoi(pElem->Attribute("type"))].path=atoi(pElem->Attribute("path"));
-        g_mob[atoi(pElem->Attribute("type"))].x=atoi(pElem->Attribute("x"));
-        g_mob[atoi(pElem->Attribute("type"))].y=atoi(pElem->Attribute("y"));
-        g_mob[atoi(pElem->Attribute("type"))].width=atoi(pElem->Attribute("width"));
-        g_mob[atoi(pElem->Attribute("type"))].height=atoi(pElem->Attribute("height"));
+        mobType newMob;
+        newMob.path=atoi(pElem->Attribute("path"));
+        newMob.x=atoi(pElem->Attribute("x"));
+        newMob.y=atoi(pElem->Attribute("y"));
+        newMob.width=atoi(pElem->Attribute("width"));
+        newMob.height=atoi(pElem->Attribute("height"));
+
+        g_mob[atoi(pElem->Attribute("type"))]=newMob;
     }
+    //! Chargement des sons
     pElem=hDoc.FirstChild("sound").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
         sf::SoundBuffer newSound;
         newSound.LoadFromFile(pElem->Attribute("path"));
         g_soundManag[pElem->Attribute("name")]=newSound;
     }
+    //! Chargement des proprietés
     pElem=hDoc.FirstChild("config").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
         GameConfig::g_config[pElem->Attribute("name")]=atoi(pElem->Attribute("value"));
@@ -62,12 +68,25 @@ void GameConfig::LoadConfig(){
 }
 
 sf::Color GameConfig::NbrToColor(int nbr){
-    if(nbr==1)return sf::Color::Red;
-
+    switch(nbr){
+      case 1:
+        return sf::Color::Red;
+      break;
+      case 2:
+        return sf::Color::Yellow;
+      break;
+      default:
+        return sf::Color::White;
+    }
 }
 
 int GameConfig::ColorToNbr(sf::Color myColor){
-    if(myColor==sf::Color(205,45,45))return 1;
+    if(myColor==sf::Color::Red)
+        return 1;
+    else if(myColor==sf::Color::Yellow)
+        return 2;
+    else
+        return 6;
 }
 
 GameConfig::~GameConfig()
