@@ -27,6 +27,8 @@ void GameConfig::LoadConfig(){
     TiXmlHandle hDoc(&doc);
     TiXmlHandle hRoot(0);
     TiXmlElement* pElem;
+
+    cout<<"     Images loading...";
     //! Chargement des textures
     pElem=hDoc.FirstChild("img").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
@@ -41,6 +43,22 @@ void GameConfig::LoadConfig(){
         newAnim.nbrLine=atoi(pElem->Attribute("nbrLines"));
         g_imgManag[pElem->Attribute("name")]=newAnim;
     }
+    cout<<" [OK]"<<endl;
+    cout<<"     Sounds loading...";
+    //! Chargement des sons
+    pElem=hDoc.FirstChild("sound").FirstChild().Element();
+    for(; pElem; pElem=pElem->NextSiblingElement()){
+        sf::SoundBuffer newSound;
+        newSound.LoadFromFile(pElem->Attribute("path"));
+        g_soundManag[pElem->Attribute("name")]=newSound;
+    }
+    cout<<" [OK]"<<endl;
+    cout<<"     Configuration data loading...";
+    //! Chargement des proprietés
+    pElem=hDoc.FirstChild("config").FirstChild().Element();
+    for(; pElem; pElem=pElem->NextSiblingElement()){
+        GameConfig::g_config[pElem->Attribute("name")]=atoi(pElem->Attribute("value"));
+    }
     //! Chargement des mobs
     pElem=hDoc.FirstChild("enemies").FirstChild().Element();
     for(; pElem; pElem=pElem->NextSiblingElement()){
@@ -53,18 +71,7 @@ void GameConfig::LoadConfig(){
 
         g_mob[atoi(pElem->Attribute("type"))]=newMob;
     }
-    //! Chargement des sons
-    pElem=hDoc.FirstChild("sound").FirstChild().Element();
-    for(; pElem; pElem=pElem->NextSiblingElement()){
-        sf::SoundBuffer newSound;
-        newSound.LoadFromFile(pElem->Attribute("path"));
-        g_soundManag[pElem->Attribute("name")]=newSound;
-    }
-    //! Chargement des proprietés
-    pElem=hDoc.FirstChild("config").FirstChild().Element();
-    for(; pElem; pElem=pElem->NextSiblingElement()){
-        GameConfig::g_config[pElem->Attribute("name")]=atoi(pElem->Attribute("value"));
-    }
+    cout<<" [OK]"<<endl;
 }
 
 sf::Color GameConfig::NbrToColor(int nbr){
@@ -74,6 +81,18 @@ sf::Color GameConfig::NbrToColor(int nbr){
       break;
       case 2:
         return sf::Color::Yellow;
+      break;
+      case 3:
+        return sf::Color::Blue;
+      break;
+      case 4:
+        return sf::Color::Green;
+      break;
+      case 5:
+        return sf::Color::Color(147,62,152);
+      break;
+      case 6:
+        return sf::Color::Color(236,146,18);
       break;
       default:
         return sf::Color::White;

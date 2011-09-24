@@ -24,6 +24,7 @@ ImgAnim::ImgAnim(GameConfig::g_imgManag["player"].img,GameConfig::g_imgManag["pl
 ,m_velx(0),m_vely(0),
 m_jumpLock(false),m_colBot(false),m_direction(false),m_lookUp(false),m_moving(false)
 {
+    m_listObject=(*m_map)->GetMapBullet();
    pause();
 }
 void Player::MovePlayer(){
@@ -203,7 +204,7 @@ void Player::Turn(bool left, bool right){
     }
     return CollisionVertical;
  }
-void Player::SetMapObject(vector<GameEntity*> *listObject){
+void Player::SetMapObject(vector<GameBullet*> *listObject){
     m_listObject=listObject;
 }
 
@@ -249,20 +250,12 @@ void Player::Shoot(){
     if(m_lastShot.GetElapsedTime()/1000.f>0.4){
         float velx=0,vely=0;
         if(m_lookUp==HAUT ){
-            if(m_moving==BOUGE){
-                vely=-162;
-                velx=162;
-                if(m_direction==GAUCHE){
-                    velx=-162;
-                }
-            }
-            else{
                 vely=-100;
-            }
         }
         else{
-            velx=-100;
             if(m_direction==DROITE)velx=100;
+            else velx=-100;
+
         }
 
         m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,this,velx,vely,true));

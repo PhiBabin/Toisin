@@ -67,14 +67,21 @@ void MapTile::Explode(int x, int y){
         }
 
     }
-    m_tileSet[x][y]=m_typeList[VIDE];
     m_mapEntity.push_back(new GameAnim(GameConfig::g_imgManag["boom"].img,GameConfig::GameConfig::g_imgManag["boom"].nbrCollum,GameConfig::GameConfig::g_imgManag["boom"].nbrLine));
     m_mapEntity.back()->SetPosition(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"]);
     m_mapEntity.back()->setDelay(0.125);
+    m_mapEntity.back()->SetColor(GameConfig::NbrToColor(m_tileSet[x][y].color));
+    m_tileSet[x][y]=m_typeList[VIDE];
 }
 
  vector<GameEntity*> * MapTile::GetMapEntity(){
     return &m_mapEntity;
+ }
+ vector<GameMob*> * MapTile::GetMapMob(){
+    return &m_mapMob;
+ }
+ vector<GameBullet*> * MapTile::GetMapBullet(){
+    return &m_mapBullet;
  }
  sf::Vector2i MapTile::GetPlateau(){
         return m_currentPlateau;
@@ -157,6 +164,16 @@ void MapTile::Draw(){
             m_app->Draw(*(m_mapEntity.at(i)));
         }
     }
+    //! On affiche les balles de la carte
+    for(unsigned int i=0;i<m_mapBullet.size();i++){
+        if((m_mapBullet.at(i))->isDelete()){
+            delete m_mapBullet.at(i);
+            m_mapBullet.erase( m_mapBullet.begin() + i );
+        }
+        else{
+            m_app->Draw(*(m_mapBullet.at(i)));
+        }
+    }
 
     //! On affiche le personnage et ces éléments
     m_app->Draw(*m_player);
@@ -169,7 +186,6 @@ void MapTile::Draw(){
 
 void MapTile::LoadMap(){
     map<string,string> levelConfig;
-	int typeSpawn1;
 	const int tilewidth =GameConfig::g_config["tilewidth"];
 	const int tileheight =GameConfig::g_config["tileheight"];
 

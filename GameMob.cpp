@@ -40,6 +40,11 @@ bool GameMob::isCollision()const{
 bool GameMob::collisionEffect(Player &player){
     return false;
 }
+sf::FloatRect GameMob::GetRect()const{
+    return sf::FloatRect(GetPosition().x,
+                         GetPosition().y,
+                         m_colWidth,m_colHeight);
+}
 sf::FloatRect GameMob::GetMovedRect(const float moveX,const float moveY)const{
     return sf::FloatRect(GetPosition().x+moveX,
                          GetPosition().y+moveY,
@@ -62,7 +67,7 @@ bool GameMob::CollisionGeneral(const sf::FloatRect entityRect){
             if((*m_map)->Tile(x,y).solid){
                 sf::FloatRect  theTile(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"],GameConfig::g_config["tilewidth"],GameConfig::g_config["tileheight"]);
                 if(entityRect.Intersects(theTile)||theTile.Intersects(entityRect)){
-                    if((*m_map)->Tile(x,y).boomer)(*m_map)->Explode(x,y);
+                    //if((*m_map)->Tile(x,y).boomer)(*m_map)->Explode(x,y);
                     return true;
                 }
             }

@@ -6,6 +6,7 @@ class GameMob: public GameEntity{
     public:
         GameMob(int type,sf::Vector2f position);
         void InverVel();
+        sf::FloatRect GetRect()const;
         sf::FloatRect GetMovedRect(const float moveX,const float moveY)const;
         bool CollisionGeneral(const sf::FloatRect entityRect);
         virtual void Update();

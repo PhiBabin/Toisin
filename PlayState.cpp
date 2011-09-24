@@ -31,8 +31,13 @@ PlayState::PlayState(GameEngine* theGameEngine): m_player(0),m_map(0)
     GameEntity::m_app=&(*m_gameEngine).m_app;
 
     m_map =new MapTile(&(*m_gameEngine).m_app,m_player);
+
+    m_mapMob=m_map->GetMapMob();
+    m_mapBullet=m_map->GetMapBullet();
+
     m_mapEntity=m_map->GetMapEntity();
-    m_player->SetMapObject(m_mapEntity);
+    m_player->SetMapObject(m_mapBullet);
+
     m_camera = m_gameEngine->m_app.GetDefaultView();
     m_camera.Zoom(0.5);
      m_gameEngine->m_app.SetView(m_camera);
@@ -95,6 +100,10 @@ void PlayState::loop(){
     m_gameEngine->m_app.SetView(m_camera);
  //! Déplacement des objets
     moveObject();
+ //! Déplacement des mobs
+    moveMob();
+ //! Déplacement des mobs
+    moveBullet();
 }
 /**
     Pause le jeu
@@ -133,7 +142,50 @@ void PlayState::GetEvents(sf::Event){
 void PlayState::draw(){
     m_map->Draw();
 }
+/**
+    Déplacement des Mobs
+**/
+void PlayState::moveMob(){
+    for(unsigned int i=0;i<m_mapMob->size();i++){
+        sf::FloatRect Rect=m_mapMob->at(i)->GetRect();
 
+        if(m_player->GetPlayerRect().Intersects(Rect)){
+            m_player->Degat(2);
+        }
+        bool dies=false;
+        for(unsigned int v=0;v<m_mapBullet->size()&&!dies;v++){
+            sf::FloatRect RectBullet=m_mapBullet->at(v)->GetRect();
+            if(Rect.Intersects(RectBullet)){
+                dies=true;
+                delete m_mapMob->at(i);
+                m_mapMob->erase( m_mapMob->begin() + i );
+                i--;
+                delete m_mapBullet->at(v);
+                m_mapBullet->erase( m_mapBullet->begin() + v );
+            }
+
+        }
+    }
+}
+
+/**
+    Déplacement des balles
+**/
+void PlayState::moveBullet(){
+    for(unsigned int i=0;i<m_mapBullet->size();i++){
+        sf::FloatRect Rect=m_mapBullet->at(i)->GetMovedRect(
+        m_mapBullet->at(i)->GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f,
+        m_mapBullet->at(i)->GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f);
+
+        if(!m_map->CollisionGeneral(Rect))
+            m_mapBullet->at(i)->Move(Rect.Left-m_mapBullet->at(i)->GetPosition().x, Rect.Top-m_mapBullet->at(i)->GetPosition().y);
+        else {
+            delete m_mapBullet->at(i);
+            m_mapBullet->erase( m_mapBullet->begin() + i );
+            i--;
+        }
+    }
+}
 /**
     Déplacement des objets
 **/

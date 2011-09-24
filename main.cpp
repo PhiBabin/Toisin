@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 int main(){
    cout<<"  /App Start"<<endl;
 
-   cout<<"  /App Load Configuration"<<endl;
+   cout<<"  /App Ressources Loading"<<endl;
    GameConfig::LoadConfig();
 
     sf::RenderWindow App(sf::VideoMode(GameConfig::g_config["screenwidth"], GameConfig::g_config["screenheight"], 32), "Toisin", sf::Style::Close | sf::Style::Titlebar );

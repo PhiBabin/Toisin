@@ -28,6 +28,8 @@ class PlayState: public GameState {
         virtual void GetEvents(sf::Event eventNew);
         virtual void draw();
         void moveObject();
+        void moveMob();
+        void moveBullet();
         virtual ~PlayState();
     private:
         Player *m_player;
@@ -36,6 +38,8 @@ class PlayState: public GameState {
         bool m_start;
 
         vector<GameEntity*> *m_mapEntity;
+        vector<GameMob*> *m_mapMob;
+        vector<GameBullet*> *m_mapBullet;
         GameEngine *m_gameEngine;
 };
 

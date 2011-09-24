@@ -42,6 +42,8 @@ class MapTile{
         void ReloadMob();
         void PlanteauTransition(sf::Vector2i n);
         vector<GameEntity*> * GetMapEntity();
+        vector <GameMob*> * GetMapMob();
+        vector <GameBullet*> * GetMapBullet();
         sf::Vector2i GetPlateau();
         bool CollisionGeneral(const sf::FloatRect playerRect);
         ~MapTile();
@@ -59,6 +61,7 @@ class MapTile{
 		vector <Type> m_typeList;
 		vector <GameEntity*> m_mapEntity;
 		vector <GameMob*> m_mapMob;
+		vector <GameBullet*> m_mapBullet;
 		vector <MobSpawner> m_mobSpawner;
 		Player *m_player;
 		sf::RenderTexture m_map;

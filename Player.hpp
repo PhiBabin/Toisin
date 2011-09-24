@@ -45,7 +45,7 @@ class Player:public ImgAnim{
         void Turn(bool left, bool right);
         void TurnUp(bool up);
     //! Link la liste des entités
-        void SetMapObject(vector<GameEntity*> *listObject);
+        void SetMapObject(vector<GameBullet*> *listObject);
     //! Vie et mort
         int GetHp();
         void SetHp(int nhp);
@@ -64,7 +64,7 @@ class Player:public ImgAnim{
     private:
         sf::RenderWindow *m_app;
         MapTile **m_map;
-        vector<GameEntity*> *m_listObject;
+        vector<GameBullet*> *m_listObject;
 
         int m_hp;
         float m_velx;
