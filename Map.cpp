@@ -41,6 +41,8 @@ void MapTile::PlanteauTransition(sf::Vector2i n){
     m_tileSet=m_blankTileSet;
     //! On efface les animations
 	m_mapEntity.erase(m_mapEntity.begin(),m_mapEntity.end());
+    //! On efface les balles
+	m_mapBullet.erase(m_mapBullet.begin(),m_mapBullet.end());
 	//! On recharge les mobs
 	ReloadMob();
 }
@@ -55,22 +57,38 @@ void MapTile::ReloadMob(){
     }
 }
 void MapTile::Explode(int x, int y){
-    int xp,yp;
-    for(int i=0;i<4;i++){
-        if(i==0){xp=1;yp=0;}
-        if(i==1){xp=0;yp=1;}
-        if(i==2){xp=-1;yp=0;}
-        if(i==3){xp=0;yp=-1;}
-        if(m_tileSet[x+xp][y+yp].boomer && !m_tileSet[x+xp][y+yp].isExploded && m_tileSet[x+xp][y+yp].color<=m_tileSet[x][y].color){
-            m_tileSet[x+xp][y+yp].isExploded=true;
-            m_tileSet[x+xp][y+yp].boom.Reset();
-        }
-
-    }
+    cout<<"BOOOM!!!"<<x<<" "<<y<<endl;
+    //exit(0);
     m_mapEntity.push_back(new GameAnim(GameConfig::g_imgManag["boom"].img,GameConfig::GameConfig::g_imgManag["boom"].nbrCollum,GameConfig::GameConfig::g_imgManag["boom"].nbrLine));
     m_mapEntity.back()->SetPosition(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"]);
     m_mapEntity.back()->setDelay(0.125);
     m_mapEntity.back()->SetColor(GameConfig::NbrToColor(m_tileSet[x][y].color));
+
+    int xp,yp;
+    if(m_tileSet[x][y].big){
+        m_tileSet[x][y]=m_typeList[VIDE];
+        for(int xe=-1;xe<2&&x+xe<m_width;xe++){
+            for(int ye=-1;ye<2&&y+ye<m_height;ye++){
+                if(!(xe==0 && ye==0)&&m_tileSet[x+xe][y+ye].boomer && !m_tileSet[x+xe][y+ye].isExploded){
+                    m_tileSet[x+xe][y+ye].isExploded=true;
+                    Explode(x+xe,y+ye);
+                }
+            }
+        }
+    }
+    else {
+        for(int i=0;i<4;i++){
+            if(i==0){xp=1;yp=0;}
+            if(i==1){xp=0;yp=1;}
+            if(i==2){xp=-1;yp=0;}
+            if(i==3){xp=0;yp=-1;}
+            if(m_tileSet[x+xp][y+yp].boomer && !m_tileSet[x+xp][y+yp].isExploded && m_tileSet[x+xp][y+yp].color<=m_tileSet[x][y].color){
+                m_tileSet[x+xp][y+yp].isExploded=true;
+                m_tileSet[x+xp][y+yp].boom.Reset();
+            }
+
+        }
+    }
     m_tileSet[x][y]=m_typeList[VIDE];
 }
 
@@ -229,6 +247,7 @@ void MapTile::LoadMap(){
         newTile.solid=true;
         newTile.isExploded=false;
         newTile.boomer=false;
+        newTile.big=false;
         newTile.fall=false;
         newTile.touch=false;
         newTile.color=0;
@@ -252,6 +271,10 @@ void MapTile::LoadMap(){
 
             if(string(elemProp->Attribute("name"))=="boomer"&& atoi(elemProp->Attribute("value"))==1){
                 newTile.boomer=true;
+            }
+
+            if(string(elemProp->Attribute("name"))=="big"&& atoi(elemProp->Attribute("value"))==1){
+                newTile.big=true;
             }
 
             if(string(elemProp->Attribute("name"))=="fall"&& atoi(elemProp->Attribute("value"))==1){

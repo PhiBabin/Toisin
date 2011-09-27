@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define MAP_HPP_INCLUDED
 struct Type{
     //! Propriétés
-	bool visible, solid, kill, boomer, isExploded, fall ,touch;
+	bool visible, solid, kill, boomer, big, isExploded, fall ,touch;
 	//! Propriété pour un block explosif
 	int color;
 	PausableClock boom;

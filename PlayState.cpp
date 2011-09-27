@@ -26,6 +26,12 @@ PlayState::PlayState(GameEngine* theGameEngine): m_player(0),m_map(0)
 
 
     m_player= new Player(&(*m_gameEngine).m_app,&m_map);
+    m_player->AddColor(1);
+    m_player->AddColor(2);
+    m_player->AddColor(3);
+    m_player->AddColor(4);
+    m_player->AddColor(5);
+    m_player->AddColor(6);
 
     GameEntity::m_map=&m_map;
     GameEntity::m_app=&(*m_gameEngine).m_app;
@@ -70,6 +76,13 @@ void PlayState::loop(){
     m_player->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
     m_player->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
     if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Z))m_player->Shoot();
+
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num1))m_player->SwitchColor(1);
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num2))m_player->SwitchColor(2);
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num3))m_player->SwitchColor(3);
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num4))m_player->SwitchColor(4);
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num5))m_player->SwitchColor(5);
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num6))m_player->SwitchColor(6);
 
 //    const sf::Input &Input =m_gameEngine->m_app.GetInput();
 //

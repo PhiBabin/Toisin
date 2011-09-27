@@ -41,6 +41,8 @@ class Player:public ImgAnim{
         void UnlockJump();
     //! Tire
         void Shoot();
+        void AddColor(int newColor);
+        void SwitchColor(int newColor);
     //! Déplacement
         void Turn(bool left, bool right);
         void TurnUp(bool up);
@@ -65,6 +67,8 @@ class Player:public ImgAnim{
         sf::RenderWindow *m_app;
         MapTile **m_map;
         vector<GameBullet*> *m_listObject;
+        vector<bool> m_colors;
+        int m_selected;
 
         int m_hp;
         float m_velx;

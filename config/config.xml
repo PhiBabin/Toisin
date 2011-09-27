@@ -9,6 +9,9 @@
 	<mob name="killyou" type="1" path="0" x="0" y="0" width="13" height="8" />
 	<mob name="truc" type="2" path="1" x="0" y="8" width="9" height="15" />
 </enemies>
+<items>
+	<item name="blueflag" type="1" path="0" x="0" y="0" width="3" height="3" color="3"/>
+</items>
 <sound>
 	<wav name="jump" path="sounds/jump.wav" />
 </sound>
