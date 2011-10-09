@@ -75,11 +75,13 @@ class Player:public ImgAnim{
         float m_vely;
         bool m_jumpLock;
         bool m_colBot;
+        bool m_hurting;
         bool m_direction;
         bool m_lookUp;
         bool m_moving;
 
         PausableClock m_lastShot;
+        PausableClock m_blink;
         PausableClock m_hurt;
         PausableClock m_shadow;
 };

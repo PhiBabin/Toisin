@@ -60,7 +60,7 @@ void PlayState::init(){
 **/
 void PlayState::loop(){
 
-    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::D))
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::E))
         cout<<"FPS="<<floor(1.f/(m_gameEngine->m_app.GetFrameTime())*1000)<<endl
         <<"Joueur 1 x="<<m_player->GetPosition().x<<" y="<<m_player->GetPosition().y<<endl
         <<"Velx="<<m_player->GetVelx()<<endl
@@ -72,10 +72,10 @@ void PlayState::loop(){
 
 
     //! Control du joueur 1
-    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::X))m_player->Jump();
-    m_player->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::Up));
-    m_player->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::Left),sf::Keyboard::IsKeyPressed(sf::Keyboard::Right));
-    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Z))m_player->Shoot();
+    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::M))m_player->Jump();
+    m_player->TurnUp(sf::Keyboard::IsKeyPressed(sf::Keyboard::W));
+    m_player->Turn(sf::Keyboard::IsKeyPressed(sf::Keyboard::A),sf::Keyboard::IsKeyPressed(sf::Keyboard::D));
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::N))m_player->Shoot();
 
     if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num1))m_player->SwitchColor(1);
     if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Num2))m_player->SwitchColor(2);
@@ -190,7 +190,7 @@ void PlayState::moveBullet(){
         m_mapBullet->at(i)->GetVelx()*m_gameEngine->m_app.GetFrameTime()/1000.f,
         m_mapBullet->at(i)->GetVely()*m_gameEngine->m_app.GetFrameTime()/1000.f);
 
-        if(!m_map->CollisionGeneral(Rect))
+        if(!m_map->CollisionGeneral(Rect,GameConfig::ColorToNbr(m_mapBullet->at(i)->GetColor())))
             m_mapBullet->at(i)->Move(Rect.Left-m_mapBullet->at(i)->GetPosition().x, Rect.Top-m_mapBullet->at(i)->GetPosition().y);
         else {
             delete m_mapBullet->at(i);

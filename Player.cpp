@@ -21,8 +21,8 @@ ImgAnim::ImgAnim(GameConfig::g_imgManag["player"].img,GameConfig::g_imgManag["pl
 ,m_hp(GameConfig::g_config["starthp"])
 ,m_app(App)
 ,m_map(map)
-,m_velx(0),m_vely(0),m_selected(1),
-m_jumpLock(false),m_colBot(false),m_direction(false),m_lookUp(false),m_moving(false)
+,m_velx(0),m_vely(0),m_selected(6),
+m_jumpLock(false),m_colBot(false),m_hurting(false),m_direction(false),m_lookUp(false),m_moving(false)
 {
     for(int i=0;i<=6;i++)m_colors.push_back(false);
     m_listObject=(*m_map)->GetMapBullet();
@@ -210,7 +210,12 @@ void Player::SetMapObject(vector<GameBullet*> *listObject){
 }
 
 void Player::Degat(int degats){
-    m_hp-=degats;
+    if(!m_hurting){
+        m_hurting=true;
+        m_blink.Reset();
+        m_hurt.Reset();
+        m_hp-=degats;
+    }
 }
 int Player::GetHp(){
     return m_hp;
@@ -248,20 +253,20 @@ void Player::UnlockJump(){
     m_vely=0;
 }
 void Player::Shoot(){
-    if(m_lastShot.GetElapsedTime()/1000.f>0.4){
+    if(m_lastShot.GetElapsedTime()/1000.f>0.3){
         float velx=0,vely=0;
         if(m_lookUp==HAUT ){
-                vely=-100;
+                vely=-150;
         }
         else{
-            if(m_direction==DROITE)velx=100;
-            else velx=-100;
+            if(m_direction==DROITE)velx=150;
+            else velx=-150;
 
         }
 
         m_listObject->push_back(new GameBullet(GameConfig::GameConfig::g_imgManag["bullet"].img,GameConfig::GameConfig::g_imgManag["bullet"].nbrCollum,GameConfig::GameConfig::g_imgManag["bullet"].nbrLine,10,this,velx,vely,true));
         m_listObject->back()->SetPosition(GetPosition().x,GetPosition().y+GameConfig::g_config["playercollheight"]/4);
-        m_listObject->back()->setDelay(0.1);
+        //m_listObject->back()->setDelay(0.1);
         m_listObject->back()->SetColor(GameConfig::NbrToColor(m_selected));
         m_lastShot.Reset();
     }
@@ -281,6 +286,21 @@ void Player::SwitchColor(int newColor){
     }
 }
 void Player::Drawing(){
+
+    SetColor(sf::Color::White);
+
+    if(m_hurting && m_hurt.GetElapsedTime()>4000){
+        m_hurting=false;
+    }
+    if(m_hurting){
+      if(m_blink.GetElapsedTime()>500)m_blink.Reset();
+      if(m_blink.GetElapsedTime()>0 && m_blink.GetElapsedTime()<250){
+            SetColor(sf::Color::White);
+      }
+      else{
+            SetColor(sf::Color::Color(255,255,255,128));
+      }
+    }
     //! Trainé
    // if(m_shadow.GetElapsedTime()>100){
 //        m_listObject->push_back(new GameAnim(GameConfig::g_imgManag["player"].img,GameConfig::GameConfig::g_imgManag["player"].nbrCollum,GameConfig::GameConfig::g_imgManag["player"].nbrLine));

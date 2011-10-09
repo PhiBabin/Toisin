@@ -104,8 +104,16 @@ int GameConfig::ColorToNbr(sf::Color myColor){
         return 1;
     else if(myColor==sf::Color::Yellow)
         return 2;
-    else
+    else if(myColor==sf::Color::Blue)
+        return 3;
+    else if(myColor==sf::Color::Green)
+        return 4;
+    else if(myColor==sf::Color(147,62,152))
+        return 5;
+    else if(myColor==sf::Color(236,146,18))
         return 6;
+    else
+        return 0;
 }
 
 GameConfig::~GameConfig()

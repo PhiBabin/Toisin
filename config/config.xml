@@ -10,7 +10,7 @@
 	<mob name="truc" type="2" path="1" x="0" y="8" width="9" height="15" />
 </enemies>
 <items>
-	<item name="blueflag" type="1" path="0" x="0" y="0" width="3" height="3" color="3"/>
+	<item name="blueflag" type="1" path="0" x="0" y="0" width="13" height="8" color="3"/>
 </items>
 <sound>
 	<wav name="jump" path="sounds/jump.wav" />
@@ -30,6 +30,6 @@
 
 	<option name="gravity" value="250" />
 	<option name="jump" value="-150" />
-	<option name="starthp" value="100" />
+	<option name="starthp" value="3" />
 	<option name="level" value="1" />
 </config>

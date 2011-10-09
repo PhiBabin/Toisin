@@ -67,8 +67,8 @@ void MapTile::Explode(int x, int y){
     int xp,yp;
     if(m_tileSet[x][y].big){
         m_tileSet[x][y]=m_typeList[VIDE];
-        for(int xe=-1;xe<2&&x+xe<m_width;xe++){
-            for(int ye=-1;ye<2&&y+ye<m_height;ye++){
+        for(int xe=-2;xe<3&&x+xe<m_width;xe++){
+            for(int ye=-2;ye<3&&y+ye<m_height;ye++){
                 if(!(xe==0 && ye==0)&&m_tileSet[x+xe][y+ye].boomer && !m_tileSet[x+xe][y+ye].isExploded){
                     m_tileSet[x+xe][y+ye].isExploded=true;
                     Explode(x+xe,y+ye);
@@ -105,7 +105,7 @@ void MapTile::Explode(int x, int y){
         return m_currentPlateau;
  }
 
- bool MapTile::CollisionGeneral(const sf::FloatRect entityRect){
+ bool MapTile::CollisionGeneral(const sf::FloatRect entityRect,int color=0){
     int maxHeight, minHeight, maxWidth, minWidth;
     minHeight=entityRect.Top/GameConfig::g_config["tileheight"];
     minWidth=entityRect.Left/GameConfig::g_config["tilewidth"];
@@ -122,7 +122,7 @@ void MapTile::Explode(int x, int y){
                 if(m_tileSet[x][y].solid){
                     sf::FloatRect  theTile(x*GameConfig::g_config["tilewidth"],y*GameConfig::g_config["tileheight"],GameConfig::g_config["tilewidth"],GameConfig::g_config["tileheight"]);
                     if(entityRect.Intersects(theTile)||theTile.Intersects(entityRect)){
-                        if(m_tileSet[x][y].boomer)Explode(x,y);
+                        if(m_tileSet[x][y].boomer && m_tileSet[x][y].color<=color&& color!=0)Explode(x,y);
                         return true;
                     }
                 }

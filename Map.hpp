@@ -45,7 +45,7 @@ class MapTile{
         vector <GameMob*> * GetMapMob();
         vector <GameBullet*> * GetMapBullet();
         sf::Vector2i GetPlateau();
-        bool CollisionGeneral(const sf::FloatRect playerRect);
+        bool CollisionGeneral(const sf::FloatRect playerRect, int color);
         ~MapTile();
 
         //! Public variable
