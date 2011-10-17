@@ -44,9 +44,9 @@ void MapTile::PlanteauTransition(sf::Vector2i n){
     //! On efface les balles
 	m_mapBullet.erase(m_mapBullet.begin(),m_mapBullet.end());
 	//! On recharge les mobs
-	ReloadMob();
+	RespawnMob();
 }
-void MapTile::ReloadMob(){
+void MapTile::RespawnMob(){
     while(0!=m_mapMob.size()){
         delete m_mapMob.at(0);
         m_mapMob.erase(m_mapMob.begin());
@@ -297,7 +297,23 @@ void MapTile::LoadMap(){
              m_player->SetPosition(m_spawnLocationOne);
              m_currentPlateau= sf::Vector2i(m_spawnLocationOne.x/GameConfig::g_config["platwidth"],m_spawnLocationOne.y/GameConfig::g_config["platheight"]);
         }
-        //! Mob
+
+        //! Flags
+        if(string(pElem->Attribute("type"))=="flag"){
+            GameItem* newFlag= new GameItem(GameConfig::GameConfig::g_imgManag["flag"].img,
+                GameConfig::GameConfig::g_imgManag["flag"].nbrCollum,
+                GameConfig::GameConfig::g_imgManag["flag"].nbrLine,0);
+            newFlag->SetPosition(atoi(pElem->Attribute("x")) ,atoi(pElem->Attribute("y")));
+            elemProp=TiXmlHandle(pElem).FirstChild("properties").FirstChild().Element();
+            for(; elemProp; elemProp=elemProp->NextSiblingElement()){
+                if(string(elemProp->Attribute("name"))=="color"){
+                    newFlag->SetColor( GameConfig::NbrToColor( atoi( elemProp->Attribute("value") ) ) );
+                }
+            }
+            m_flag.push_back(newFlag);
+        }
+
+        //! Mobs
         if(string(pElem->Attribute("type"))=="mob"){
             MobSpawner newMob;
             newMob.position=sf::Vector2f(atoi(pElem->Attribute("x")) ,atoi(pElem->Attribute("y")));
@@ -314,7 +330,7 @@ void MapTile::LoadMap(){
         }
     }
     //! On charge les mobs
-    ReloadMob();
+    RespawnMob();
 
 	//! Charge le background
     m_background.Create(m_width*tilewidth,m_height*tileheight);

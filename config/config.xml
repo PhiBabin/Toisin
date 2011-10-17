@@ -4,6 +4,7 @@
 	<sprite name="mobs" path="img/mobs.png" nbrCollums="1" nbrLines="1" />
 	<sprite name="bullet" path="img/bullet.png" nbrCollums="1" nbrLines="1" />
 	<anim name="boom" path="img/boom.png" nbrCollums="5" nbrLines="1" />
+	<anim name="flag" path="img/flag.png" nbrCollums="4" nbrLines="1" />
 </img>
 <enemies>
 	<mob name="killyou" type="1" path="0" x="0" y="0" width="13" height="8" />

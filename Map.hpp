@@ -39,7 +39,7 @@ class MapTile{
        // bool CollisionTile(float x,float y);
         Type Tile(float x, float y);
         void Explode(int x, int y);
-        void ReloadMob();
+        void RespawnMob();
         void PlanteauTransition(sf::Vector2i n);
         vector<GameEntity*> * GetMapEntity();
         vector <GameMob*> * GetMapMob();
@@ -62,6 +62,7 @@ class MapTile{
 		vector <GameEntity*> m_mapEntity;
 		vector <GameMob*> m_mapMob;
 		vector <GameBullet*> m_mapBullet;
+		vector <GameItem*> m_flag;
 		vector <MobSpawner> m_mobSpawner;
 		Player *m_player;
 		sf::RenderTexture m_map;
